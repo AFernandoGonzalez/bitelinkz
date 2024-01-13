@@ -13,6 +13,7 @@ const validateUrl = (req, res, next) => {
 };
 
 router.post('/shorten', validateUrl, urlController.shortenUrl);
+
 router.get('/:shortCode', urlController.redirectToOriginalUrl);
 router.get('/info/:shortCode', urlController.redirectToOriginalUrlInfo);
 
