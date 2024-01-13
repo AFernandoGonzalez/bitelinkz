@@ -2,7 +2,16 @@ const UrlModel = require('../models/url');
 const validUrl = require('valid-url');
 const shortid = require('shortid');
 
+const normalizeUrl = (url) => {
+    // If the URL does not start with 'http://' or 'https://', add 'http://'
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'http://' + url;
+    }
+    return url;
+}
+
 const isValidUrl = (url) => {
+    url = normalizeUrl(url);
     return validUrl.isUri(url);
 };
 
@@ -23,7 +32,7 @@ const shortenUrl = async (req, res) => {
         let url = await UrlModel.findOne({ originalUrl });
 
         if (url) {
-            return res.status(200).json(url);
+            return res.status(400).json({ error: 'URL has already been shortened', existingUrl: url });
         }
 
         // Generate a short code

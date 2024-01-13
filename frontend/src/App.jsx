@@ -9,7 +9,6 @@ const App = () => {
 
   const handleSubmit = async (originalUrl) => {
     try {
-      // Make a POST request to your backend endpoint
       const response = await fetch('http://localhost:8000/shorten', {
         method: 'POST',
         headers: {
@@ -22,7 +21,6 @@ const App = () => {
         throw new Error('Failed to shorten URL');
       }
 
-      // Update 'url' state with the response JSON
       const data = await response.json();
       setUrl(data);
     } catch (error) {
