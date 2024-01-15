@@ -44,7 +44,8 @@ const UrlForm = () => {
         throw new Error('URL already exists');
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
+      setOriginalUrl('');
     }
   };
 

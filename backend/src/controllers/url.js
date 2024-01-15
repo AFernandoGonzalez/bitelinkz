@@ -28,7 +28,12 @@ const shortenUrl = async (req, res) => {
     console.log('guestUserId', guestUserId);
 
     if (!isValidUrl(originalUrl)) {
-        return res.status(400).json({ error: 'Invalid URL' });
+        return res.status(400).json({ error: 'Invalid URL It shoudl start with HTTP or HTTPS' });
+    }
+
+    const isBaseUrl = process.env.BASE_URL;
+    if (originalUrl.startsWith(isBaseUrl)) {
+        return res.status(400).json({ error: `URL cannot contain ${isBaseUrl}` });
     }
 
     try {
@@ -40,10 +45,14 @@ const shortenUrl = async (req, res) => {
             existingUrl = await UrlModel.findOne({ user: null, originalUrl, guestUserId });
         }
         
-        // else {
-        //     existingUrl = await UrlModel.findOne({ user: null, originalUrl });
-        // }
+        let MAX_URLS = 5;
 
+        let totalUrls =  await UrlModel.find({ user: null, guestUserId });
+
+        if (totalUrls.length >= MAX_URLS) {
+            return res.status(400).json({ error: 'You have reached the maximum number of URLs' });
+        }
+       
         if (existingUrl && userId) {
             // If the URL already exists, return the existing short URL
             return res.status(200).json(existingUrl);
