@@ -5,9 +5,11 @@ const urlController = require('../controllers/url');
 const { requireAuth } = require('../auth/auth');
 
 
-router.post('/shorten', requireAuth , urlController.shortenUrl);
-
 router.get('/:shortCode', urlController.redirectToOriginalUrl);
-router.get('/info/:shortCode', urlController.redirectToOriginalUrlInfo);
+router.get('/info/userUrls', requireAuth , urlController.shortUrlByUser);
+router.post('/shorten', requireAuth , urlController.shortenUrl);
+router.put('/update/:urlId', requireAuth, urlController.updateUrl);
+router.delete('/delete/:urlId', requireAuth, urlController.deleteUrl);
+
 
 module.exports = router;

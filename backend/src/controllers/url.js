@@ -2,16 +2,16 @@ const UrlModel = require('../models/url');
 const validUrl = require('valid-url');
 const shortid = require('shortid');
 
-const normalizeUrl = (url) => {
-    // If the URL does not start with 'http://' or 'https://', add 'http://'
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'http://' + url;
-    }
-    return url;
-}
+// const normalizeUrl = (url) => {
+//     // If the URL does not start with 'http://' or 'https://', add 'http://'
+//     if (!url.startsWith('http://') && !url.startsWith('https://')) {
+//         url = 'http://' + url;
+//     }
+//     return url;
+// }
 
 const isValidUrl = (url) => {
-    url = normalizeUrl(url);
+    // url = normalizeUrl(url);
     return validUrl.isUri(url);
 };
 
@@ -19,71 +19,61 @@ const generateShortCode = () => {
     return shortid.generate();
 };
 
-const shortenUrl = async (req, res) => {
-    const { originalUrl, ttl } = req.body;
-    const userId = req.userId; // Use req.userId, which is set by the authentication middleware
 
-    // Check if the URL is valid
+const shortenUrl = async (req, res) => {
+    const { originalUrl } = req.body;
+    const userId = req.userId ;
+    const guestUserId = req.headers['guest-user-id'];
+
+    console.log('guestUserId', guestUserId);
+
     if (!isValidUrl(originalUrl)) {
         return res.status(400).json({ error: 'Invalid URL' });
     }
 
     try {
-        let userUrl;
+        let existingUrl;
 
-        // Check if the user is logged in
         if (userId) {
-            // If logged in, find the URL for the logged-in user
-            userUrl = await UrlModel.findOne({ user: userId, originalUrl });
-
-            // If the URL is found, return it
-            if (userUrl) {
-                return res.status(200).json(userUrl);
-            }else {
-                // If the URL is not found, create a new one
-                const shortCode = generateShortCode();
-                const shortUrl = `${process.env.BASE_URL}/${shortCode}`;
-                const url = new UrlModel({
-                    user: userId,
-                    originalUrl,
-                    shortUrl,
-                    shortCode,
-                    ttl,
-                });
-                await url.save();
-                return res.status(201).json(url);
-            }
+            existingUrl = await UrlModel.findOne({ user: userId, originalUrl });
         } else {
-            // If not logged in, find the URL for non-logged-in users
-            userUrl = await UrlModel.findOne({ user: null, originalUrl });
+            existingUrl = await UrlModel.findOne({ user: null, originalUrl, guestUserId });
+        }
+        
+        // else {
+        //     existingUrl = await UrlModel.findOne({ user: null, originalUrl });
+        // }
 
-            // If the URL is found, return it
-            if (userUrl) {
-                return res.status(200).json(userUrl);
-            } else {
-                // If the URL is not found, create a new one
-                const shortCode = generateShortCode();
-                const shortUrl = `${process.env.BASE_URL}/${shortCode}`;
-                const url = new UrlModel({
-                    user: null,
-                    originalUrl,
-                    shortUrl,
-                    shortCode,
-                    ttl,
-                });
-                await url.save();
-                return res.status(201).json(url);
-            }
+        if (existingUrl && userId) {
+            // If the URL already exists, return the existing short URL
+            return res.status(200).json(existingUrl);
         }
 
+        // Generate a short code
+        const shortCode = generateShortCode();
+        // Construct the shortened URL
+        const shortenedUrl = `${process.env.BASE_URL}/${shortCode}`;
 
-    
+        // Create a new URL document
+        const newUrl = new UrlModel({
+            originalUrl,
+            shortCode,
+            shortUrl: shortenedUrl,
+            user: userId || null,
+            guestUserId: guestUserId || null,
+        });
+
+        // Save the new URL document to the database
+        await newUrl.save();
+
+        // Return the shortened URL
+        return res.status(201).json(newUrl);
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error.message });
     }
 };
-
 
 
 const redirectToOriginalUrl = async (req, res) => {
@@ -105,24 +95,94 @@ const redirectToOriginalUrl = async (req, res) => {
     }
 };
 
-const redirectToOriginalUrlInfo = async (req, res) => {
-    const shortCode = req.params.shortCode;
+const shortUrlByUser = async (req, res) => {
+    const userId = req.userId;
+    const guestUserId = req.headers['guest-user-id'];
+    console.log('backend : guestUserId', guestUserId);
 
     try {
-        // Find the URL in the database based on the short code
-        const url = await UrlModel.findOne({ shortCode });
+        let urls;
+
+        if (userId) {
+            urls = await UrlModel.find({ user: userId });
+        } else {
+            urls = await UrlModel.find({ user: null, guestUserId });
+        }
+
+        if (!urls) {
+            return res.status(404).json({ error: 'URL not found' });
+        }
+
+        // Return information without redirection
+        return res.status(200).json(urls);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const updateUrl = async (req, res) => {
+    const { urlId } = req.params;
+    // console.log("urlId", urlId);
+    const { originalUrl } = req.body;
+    // console.log('originalUrl', originalUrl);
+    const userId = req.userId;
+    console.log('userId', userId);
+
+    if (!isValidUrl(originalUrl)) {
+        return res.status(400).json({ error: 'Invalid URL' });
+    }
+
+    try {
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const url = await UrlModel.findOne({ _id: urlId, user: userId});
 
         if (!url) {
             return res.status(404).json({ error: 'URL not found' });
         }
 
-        // Return information without redirection
+        url.originalUrl = originalUrl;
+        await url.save();
+
         return res.status(200).json(url);
+
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: error.message });
     }
 };
 
+const deleteUrl = async (req, res) => {
+    const { urlId } = req.params;
+    const userId = req.userId;
 
-module.exports = { shortenUrl, redirectToOriginalUrl, redirectToOriginalUrlInfo };
+    try {
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const url = await UrlModel.findOne({ _id: urlId, user: userId });
+
+        if (!url) {
+            return res.status(404).json({ error: 'URL not found' });
+        }
+
+        await url.deleteOne();
+
+        return res.status(200).json({ message: 'URL deleted successfully' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error.message });
+    }
+};  
+
+
+
+
+
+module.exports = { shortenUrl, redirectToOriginalUrl, shortUrlByUser, updateUrl, deleteUrl };
