@@ -47,7 +47,7 @@ export const UrlProvider = ({ children }) => {
         };
 
         fetchUserUrls();
-    }, [currentUser, guestUserId]);
+    }, [currentUser, guestUserId, setUrl]);
 
     const updateUrl = async (urlId, newOriginalUrl) => {
         try {

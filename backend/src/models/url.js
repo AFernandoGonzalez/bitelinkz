@@ -8,6 +8,7 @@ const urlSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   guestUserId: { type: String, default: null },
   qrCode: { type: String, default: null },
+  visits: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   expiresAt: { type: Date, default: null },
 });

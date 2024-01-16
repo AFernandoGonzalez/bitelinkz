@@ -38,7 +38,7 @@ const UrlInfo = () => {
           url.map((url) => (
             <li key={url._id}>
               <p>
-                <strong>Short URL:</strong> <a href={url.shortUrl}>{url.shortUrl}</a>
+                <strong>Short URL:</strong> <a href={url.shortUrl}  >{url.shortUrl}</a>
               </p>
               <p>
                 <strong>Original URL:</strong> {url.originalUrl}

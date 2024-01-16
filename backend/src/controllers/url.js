@@ -98,7 +98,7 @@ const redirectToOriginalUrl = async (req, res) => {
 
     try {
         // Find the URL in the database based on the short code
-        const url = await UrlModel.findOne({ shortCode });
+        const url = await UrlModel.findOneAndUpdate({ shortCode }, { $inc: { visits: 1 } }, { new: true });
 
         if (!url) {
             return res.status(404).json({ error: 'URL not found' });
