@@ -49,7 +49,47 @@ export const UrlProvider = ({ children }) => {
         fetchUserUrls();
     }, [currentUser, guestUserId, setUrl]);
 
-    const updateUrl = async (urlId, newOriginalUrl) => {
+    const createShortUrl = async (originalUrl) => {
+        try {
+            const headers = {};
+
+            // Check if the user is logged in
+            if (currentUser && currentUser.token) {
+                headers['Authorization'] = `Bearer ${currentUser.token}`;
+            } else {
+                headers['guest-user-id'] = guestUserId;
+                console.log('frontend : guestUserId', guestUserId);
+            }
+
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7);
+
+            const response = await fetch('http://localhost:8000/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...headers,
+                },
+                body: JSON.stringify({ originalUrl, expiresAt: expirationDate.toISOString() }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to shorten URL. Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Update the URL array without replacing it
+            setUrl((prevUrls) => [...prevUrls, data]);
+
+            return data; // Return the created URL data
+        } catch (error) {
+            console.error(error);
+            throw error; // Rethrow the error to be caught by the caller
+        }
+    };
+
+    const updateUrl = async (urlId, newOriginalUrl, formattedDate) => {
         try {
             const headers = {};
 
@@ -57,9 +97,6 @@ export const UrlProvider = ({ children }) => {
             if (currentUser && currentUser.token) {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             }
-            //  else {
-            //     headers['guest-user-id'] = guestUserId;
-            // }
 
             const response = await fetch(`http://localhost:8000/update/${urlId}`, {
                 method: 'PUT',
@@ -67,7 +104,7 @@ export const UrlProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                     ...headers,
                 },
-                body: JSON.stringify({ originalUrl: newOriginalUrl }),
+                body: JSON.stringify({ originalUrl: newOriginalUrl, expiresAt : formattedDate }),
             });
 
             if (!response.ok) {
@@ -114,6 +151,7 @@ export const UrlProvider = ({ children }) => {
     const value = {
         url,
         setUrl,
+        createShortUrl,
         updateUrl,
         deleteUrl,
     };

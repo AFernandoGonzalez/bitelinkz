@@ -70,6 +70,9 @@ const shortenUrl = async (req, res) => {
         const qrCode = await qr.toDataURL(qrCodeData);
 
 
+        // Parse expiration date if provided
+        const expirationDate = req.body.expiresAt ? new Date(req.body.expiresAt) : null;
+
         // Create a new URL document
         const newUrl = new UrlModel({
             originalUrl,
@@ -78,6 +81,7 @@ const shortenUrl = async (req, res) => {
             user: userId || null,
             guestUserId: guestUserId || null,
             qrCode,
+            expiresAt: expirationDate
         });
 
         // Save the new URL document to the database
@@ -140,11 +144,8 @@ const shortUrlByUser = async (req, res) => {
 
 const updateUrl = async (req, res) => {
     const { urlId } = req.params;
-    // console.log("urlId", urlId);
-    const { originalUrl } = req.body;
-    // console.log('originalUrl', originalUrl);
+    const { originalUrl, expiresAt } = req.body;
     const userId = req.userId;
-    console.log('userId', userId);
 
     if (!isValidUrl(originalUrl)) {
         return res.status(400).json({ error: 'Invalid URL' });
@@ -161,7 +162,17 @@ const updateUrl = async (req, res) => {
             return res.status(404).json({ error: 'URL not found' });
         }
 
+    
+
+
         url.originalUrl = originalUrl;
+
+        // Parse expiration date if provided
+        const newExpiresAt = expiresAt ? new Date(expiresAt) : null;
+
+        // Update the expiration date
+        url.expiresAt = newExpiresAt;
+
         await url.save();
 
         return res.status(200).json(url);

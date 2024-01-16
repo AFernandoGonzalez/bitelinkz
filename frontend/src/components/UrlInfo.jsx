@@ -1,20 +1,57 @@
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import { useUrl } from '../context/UrlContext';
 import { useAuth } from '../context/AuthContext';
-import QRCode from 'react-qr-code';
+import DatePicker from "react-datepicker";
+import { format, parseISO } from 'date-fns'; // Import format and parseISO
+import Modal from 'react-modal'; // Import the Modal component
+
+import "react-datepicker/dist/react-datepicker.css";
+
+import './UrlInfo.css'
+
+Modal.setAppElement('#root'); // Set the root element for the modal
+
 
 const UrlInfo = () => {
   const { url, updateUrl, deleteUrl } = useUrl();
-  const [newOriginalUrl, setNewOriginalUrl] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false); // State for modal
+
+  const [updatedOriginalUrl, setUpdatedOriginalUrl] = useState('');
+
   const { currentUser } = useAuth();
 
-  const handleUpdate = (urlId) => {
-    // You can implement a modal or input field for the user to enter the new original URL
-    // For simplicity, I'm using a prompt here.
-    const updatedOriginalUrl = prompt('Enter the new original URL:');
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false)
 
-    if (updatedOriginalUrl) {
-      updateUrl(urlId, updatedOriginalUrl);
+  useEffect(() => {
+    if (url && url.length > 0 && url[0].expiresAt) {
+      const parsedDate = parseISO(url[0].expiresAt);
+      setSelectedDate(parsedDate);
+
+      setUpdatedOriginalUrl(url[0].originalUrl || '');
+    }
+  }, [url]);
+
+  const handleUpdate = (urlId) => {
+    if (updatedOriginalUrl || selectedDate) {
+      if (updatedOriginalUrl === url[0].originalUrl) {
+        // Display an alert to the user
+        alert("You are trying to update with the same URL.");
+        return; // Stop the update process
+      }
+
+      const currentDate = new Date();
+      const expirationDate = new Date(currentDate);
+      expirationDate.setDate(currentDate.getDate() + 7);
+
+      // Format the expiration date
+      const formattedDate = format(expirationDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+
+      updateUrl(urlId, updatedOriginalUrl, formattedDate);
+      setUpdatedOriginalUrl('');
+      // closeModal();
+
     }
   };
 
@@ -46,14 +83,46 @@ const UrlInfo = () => {
               <p>
                 <strong>Visits:</strong> {url.visits}
               </p>
-              <p>
-                <img src={url.qrCode} alt="QR Code" />
-              </p>
+
+
+
               {currentUser && <div>
-                <button onClick={() => handleUpdate(url._id)} >Update</button>
-                <button onClick={() => handleDelete(url._id)}>Delete</button>
+                <img src={url.qrCode} alt="QR Code" />
+
+                <span>{url.expiresAt ? new Date(url.expiresAt).toLocaleString() : 'No expiration date'}</span>
+
+                <div>
+                  <button onClick={openModal}>Update modal</button>
+                  <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Update URL Modal"
+                  >
+                    <h2>Update URL</h2>
+                    <label>
+                      Original URL:
+                      <input
+                        type="text"
+                        placeholder={url.originalUrl}
+                        value={updatedOriginalUrl || url.originalUrl}
+                        onChange={(e) => setUpdatedOriginalUrl(e.target.value)}
+                      />
+                    </label>
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => setSelectedDate(date)}
+                      showTimeSelect
+                      dateFormat="Pp"
+                      minDate={new Date()}
+                    />
+                    <button onClick={() => handleUpdate(url._id)}>Update</button>
+                    <button onClick={() => handleDelete(url._id)}>Delete</button>
+                    <button onClick={closeModal}>Cancel</button>
+                  </Modal>
+                </div>
               </div>}
-              
+
+            
             </li>
           ))
         }
