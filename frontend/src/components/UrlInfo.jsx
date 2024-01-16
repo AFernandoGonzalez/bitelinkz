@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import { useUrl } from '../context/UrlContext';
 import { useAuth } from '../context/AuthContext';
+import QRCode from 'react-qr-code';
 
 const UrlInfo = () => {
   const { url, updateUrl, deleteUrl } = useUrl();
@@ -41,6 +42,12 @@ const UrlInfo = () => {
               </p>
               <p>
                 <strong>Original URL:</strong> {url.originalUrl}
+              </p>
+              <p>
+                <strong>Visits:</strong> {url.visits}
+              </p>
+              <p>
+                <img src={url.qrCode} alt="QR Code" />
               </p>
               {currentUser && <div>
                 <button onClick={() => handleUpdate(url._id)} >Update</button>

@@ -1,6 +1,7 @@
 const UrlModel = require('../models/url');
 const validUrl = require('valid-url');
 const shortid = require('shortid');
+const qr = require('qrcode');
 
 // const normalizeUrl = (url) => {
 //     // If the URL does not start with 'http://' or 'https://', add 'http://'
@@ -22,13 +23,13 @@ const generateShortCode = () => {
 
 const shortenUrl = async (req, res) => {
     const { originalUrl } = req.body;
-    const userId = req.userId ;
+    const userId = req.userId;
     const guestUserId = req.headers['guest-user-id'];
 
     console.log('guestUserId', guestUserId);
 
     if (!isValidUrl(originalUrl)) {
-        return res.status(400).json({ error: 'Invalid URL It shoudl start with HTTP or HTTPS' });
+        return res.status(400).json({ error: 'Invalid URL It should start with HTTP or HTTPS' });
     }
 
     const isBaseUrl = process.env.BASE_URL;
@@ -44,24 +45,30 @@ const shortenUrl = async (req, res) => {
         } else {
             existingUrl = await UrlModel.findOne({ user: null, originalUrl, guestUserId });
         }
-        
+
         let MAX_URLS = 5;
 
-        let totalUrls =  await UrlModel.find({ user: null, guestUserId });
+        let totalUrls = await UrlModel.find({ user: null, guestUserId });
 
         if (totalUrls.length >= MAX_URLS) {
             return res.status(400).json({ error: 'You have reached the maximum number of URLs' });
         }
-       
+
         if (existingUrl && userId) {
             // If the URL already exists, return the existing short URL
-            return res.status(200).json(existingUrl);
+            return res.status(200).json({ url: existingUrl, qrCode: null });
         }
 
         // Generate a short code
         const shortCode = generateShortCode();
         // Construct the shortened URL
         const shortenedUrl = `${process.env.BASE_URL}/${shortCode}`;
+
+
+        // Generate QR code
+        const qrCodeData = `${process.env.BASE_URL}/${shortCode}`;
+        const qrCode = await qr.toDataURL(qrCodeData);
+
 
         // Create a new URL document
         const newUrl = new UrlModel({
@@ -70,12 +77,13 @@ const shortenUrl = async (req, res) => {
             shortUrl: shortenedUrl,
             user: userId || null,
             guestUserId: guestUserId || null,
+            qrCode,
         });
 
         // Save the new URL document to the database
         await newUrl.save();
 
-        // Return the shortened URL
+        // Return the shortened URL and QR code data in the response
         return res.status(201).json(newUrl);
 
     } catch (error) {
