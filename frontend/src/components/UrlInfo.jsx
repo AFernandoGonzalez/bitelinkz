@@ -35,18 +35,11 @@ const UrlInfo = () => {
 
   const handleUpdate = (urlId) => {
     if (updatedOriginalUrl || selectedDate) {
-      if (updatedOriginalUrl === url[0].originalUrl) {
-        // Display an alert to the user
-        alert("You are trying to update with the same URL.");
-        return; // Stop the update process
-      }
-
       const currentDate = new Date();
       const expirationDate = new Date(currentDate);
       expirationDate.setDate(currentDate.getDate() + 7);
-
-      // Format the expiration date
-      const formattedDate = format(expirationDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+      
+      const formattedDate = format(selectedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
       updateUrl(urlId, updatedOriginalUrl, formattedDate);
       setUpdatedOriginalUrl('');
@@ -103,7 +96,7 @@ const UrlInfo = () => {
                       Original URL:
                       <input
                         type="text"
-                        placeholder={url.originalUrl}
+                       
                         value={updatedOriginalUrl || url.originalUrl}
                         onChange={(e) => setUpdatedOriginalUrl(e.target.value)}
                       />
