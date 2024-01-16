@@ -1,29 +1,32 @@
-import UrlForm from './components/UrlForm';
-import UrlInfo from './components/UrlInfo';
 import { Routes, Route } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { ManageLinks } from './pages/ManageLinks';
 import Login from './components/auth/login';
 import Logout from './components/auth/logout';
 import Register from './components/auth/register';
 import Navbar from './components/Navbar';
-import { useAuth } from './context/AuthContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 const App = () => {
-  const { currentUser } = useAuth();
-  const isLoggedIn = currentUser ? currentUser.email : 'Guest'
-
   return (
     <div>
       <header>
         <Navbar />
+      </header>
+      <main>
         <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path="/manage-links"
+            element={
+              <ProtectedRoute>
+                <ManageLinks />
+              </ProtectedRoute>
+            } />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<Register />} />
         </Routes>
-      </header>
-      <h1>URL Shortener , welcome {isLoggedIn}</h1>
-      <UrlForm  />
-      <UrlInfo />
+      </main>
     </div>
   );
 };
