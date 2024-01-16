@@ -1,124 +1,119 @@
-// import { useState, useEffect } from 'react';
-// import { useUrl } from '../context/UrlContext';
-// import { useAuth } from '../context/AuthContext';
-// import DatePicker from "react-datepicker";
-// import { format, parseISO } from 'date-fns'; 
+import { useState, useEffect, useMemo } from 'react';
+import { useUrl } from '../context/UrlContext';
+import { useAuth } from '../context/AuthContext';
+import { format, parseISO } from 'date-fns';
 import Modal from 'react-modal';
 import "react-datepicker/dist/react-datepicker.css";
 import './UrlInfo.css'
-import ShortenUrls from './ShortenUrls';
+import { UrlItem } from './UrlItem';
 
-Modal.setAppElement('#root'); 
+
+Modal.setAppElement('#root');
 
 const UrlInfo = () => {
-  // const { url, updateUrl, deleteUrl } = useUrl();
-  // const [selectedDate, setSelectedDate] = useState(null);
-  // const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { url, updateUrl, deleteUrl } = useUrl();
+  const { currentUser } = useAuth();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [updatedOriginalUrl, setUpdatedOriginalUrl] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('All');
 
-  // const [updatedOriginalUrl, setUpdatedOriginalUrl] = useState('');
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false)
 
-  // const { currentUser } = useAuth();
+  useEffect(() => {
+    if (url && url.length > 0 && url[0].expiresAt) {
+      const parsedDate = parseISO(url[0].expiresAt);
+      setSelectedDate(parsedDate);
 
-  // const openModal = () => setModalIsOpen(true);
-  // const closeModal = () => setModalIsOpen(false)
+      setUpdatedOriginalUrl(url[0].originalUrl || '');
+    }
+  }, [url]);
 
-  // useEffect(() => {
-  //   if (url && url.length > 0 && url[0].expiresAt) {
-  //     const parsedDate = parseISO(url[0].expiresAt);
-  //     setSelectedDate(parsedDate);
+  const handleUpdate = (urlId) => {
+    if (updatedOriginalUrl || selectedDate) {
+      const currentDate = new Date();
+      const expirationDate = new Date(currentDate);
+      expirationDate.setDate(currentDate.getDate() + 7);
 
-  //     setUpdatedOriginalUrl(url[0].originalUrl || '');
+      const formattedDate = format(selectedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+
+      updateUrl(urlId, updatedOriginalUrl, formattedDate);
+      setUpdatedOriginalUrl('');
+      // closeModal();
+    }
+  };
+
+  const handleDelete = (urlId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this URL?');
+
+    if (confirmDelete) {
+      deleteUrl(urlId);
+      closeModal();
+    }
+  };
+
+
+  if (!url) {
+    return null;
+  }
+
+  // const filteredUrls = useMemo(() => {
+  //   console.log('Filtering URLs...'); 
+  //   const newUrl = [...url];
+  //   if (selectedFilter === 'All') {
+  //     return newUrl;
   //   }
-  // }, [url]);
-
-  // const handleUpdate = (urlId) => {
-  //   if (updatedOriginalUrl || selectedDate) {
-  //     const currentDate = new Date();
-  //     const expirationDate = new Date(currentDate);
-  //     expirationDate.setDate(currentDate.getDate() + 7);
-      
-  //     const formattedDate = format(selectedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
-  //     updateUrl(urlId, updatedOriginalUrl, formattedDate);
-  //     setUpdatedOriginalUrl('');
-  //     // closeModal();
-
+  //   else if (selectedFilter === 'expiresAt') {
+  //     return newUrl.sort((a, b) => a.expiresAt.localeCompare(b.expiresAt));
+  //   } 
+  //   else if (selectedFilter === 'visits') {
+  //     return newUrl.sort((a, b) => b.visits - a.visits);
   //   }
-  // };
+  //   return newUrl;
+  // }, [url, selectedFilter]);
+  
+  
 
-  // const handleDelete = (urlId) => {
-  //   const confirmDelete = window.confirm('Are you sure you want to delete this URL?');
+  let filteredUrls = [...url];
 
-  //   if (confirmDelete) {
-  //     deleteUrl(urlId);
-  //     closeModal();
-  //   }
-  // };
-
-
-  // if (!url) {
-  //   return null;
-  // }
+  if (selectedFilter === 'expiresAt') {
+    filteredUrls = filteredUrls.sort((a, b) => a.expiresAt.localeCompare(b.expiresAt));
+  } else if (selectedFilter === 'visits') {
+    filteredUrls = filteredUrls.sort((a, b) => b.visits - a.visits);
+  }
 
   return (
     <div>
-      <ShortenUrls/>
-      {/* <ul>
-        {
-          url.map((url) => (
-            <li key={url._id}>
-              <p>
-                <strong>Short URL:</strong> <a href={url.shortUrl}  >{url.shortUrl}</a>
-              </p>
-              <p>
-                <strong>Original URL:</strong> {url.originalUrl}
-              </p>
-              <p>
-                <strong>Visits:</strong> {url.visits}
-              </p>
-
-
-
-              {currentUser && <div>
-                <img src={url.qrCode} alt="QR Code" />
-
-                <span>{url.expiresAt ? new Date(url.expiresAt).toLocaleString() : 'No expiration date'}</span>
-
-                <div>
-                  <button onClick={openModal}>Update modal</button>
-                  <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    contentLabel="Update URL Modal"
-                  >
-                    <h2>Update URL</h2>
-                    <label>
-                      Original URL:
-                      <input
-                        type="text"
-                       
-                        value={updatedOriginalUrl || url.originalUrl}
-                        onChange={(e) => setUpdatedOriginalUrl(e.target.value)}
-                      />
-                    </label>
-                    <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => setSelectedDate(date)}
-                      showTimeSelect
-                      dateFormat="Pp"
-                      minDate={new Date()}
-                    />
-                    <button onClick={() => handleUpdate(url._id)}>Update</button>
-                    <button onClick={() => handleDelete(url._id)}>Delete</button>
-                    <button onClick={closeModal}>Cancel</button>
-                  </Modal>
-                </div>
-
-              </div>}
-            </li>
-          ))
-        }
-      </ul> */}
+      <div>
+        <label htmlFor="originalUrl">Filter</label>
+        <select
+          value={selectedFilter}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="expiresAt">Expiration Date</option>
+          <option value="visits">Visits</option>
+        </select>
+      </div>
+      <ul>
+        {filteredUrls.map((url) => (
+          <UrlItem
+            key={url._id}
+            url={url}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+            currentUser={currentUser}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            updatedOriginalUrl={updatedOriginalUrl}
+            setUpdatedOriginalUrl={setUpdatedOriginalUrl}
+            openModal={openModal}
+            closeModal={closeModal}
+            modalIsOpen={modalIsOpen}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
