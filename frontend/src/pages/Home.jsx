@@ -8,7 +8,7 @@ export const Home = () => {
   
   return (
     <div>
-      <h1>URL Shortener , welcome {isLoggedIn}</h1>
+      <h1 className='underline' >URL Shortener , welcome {isLoggedIn}</h1>
       <UrlForm />
       <LatestUrl/>
     </div>

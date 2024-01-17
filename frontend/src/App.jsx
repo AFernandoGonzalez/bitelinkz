@@ -7,11 +7,17 @@ import Register from './components/auth/register';
 import Navbar from './components/Navbar';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
+import { useTheme } from './context/Theme';
+
 const App = () => {
+
+  const { theme } = useTheme();
+
   return (
-    <div>
+    <div className={`app ${theme ? "dark bg-gray-900 text-white" : "light bg-white"}`} >
       <header>
         <Navbar />
+        
       </header>
       <main>
         <Routes>
