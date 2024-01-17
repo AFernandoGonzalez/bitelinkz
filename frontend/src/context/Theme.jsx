@@ -7,17 +7,22 @@ export const useTheme = () => {
 };
 
 export const Theme = ({ children }) => {
-    const [theme, setTheme] = useState(true);
+    const storedTheme = localStorage.getItem('theme');
+    const initialTheme = storedTheme ? JSON.parse(storedTheme) : true;
+
+    const [theme, setTheme] = useState(initialTheme);
 
     const toggleTheme = () => {
-        setTheme(!theme);
-    }
+        const newTheme = !theme;
+        setTheme(newTheme);
+        localStorage.setItem('theme', JSON.stringify(newTheme));
+    };
 
     const value = {
         theme,
         toggleTheme,
     };
-
+    
     return (
         <ThemeContext.Provider value={value}>
             {children}

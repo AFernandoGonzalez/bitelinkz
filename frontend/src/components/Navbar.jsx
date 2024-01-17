@@ -15,7 +15,7 @@ const Navbar = () => {
     setShowMenu(!showMenu);
   };
 
-  const navbarClasses = `bg-${theme ? 'gray-900' : 'white'} transition-colors duration-300 ease-in-out`;
+  const navbarClasses = `bg-${theme ? 'gray-900' : 'white'} `;
   const linkClasses = `text-${theme ? 'white' : 'gray-900'}`;
 
   const renderAuthLinks = () => (
