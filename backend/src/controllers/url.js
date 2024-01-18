@@ -108,6 +108,11 @@ const redirectToOriginalUrl = async (req, res) => {
             return res.status(404).json({ error: 'URL not found' });
         }
 
+        // Check if the URL has expired
+        if (url.expiresAt && new Date() > url.expiresAt) {
+            return res.status(400).json({ error: 'URL has expired' });
+        }
+
         // Redirect to the original URL
         return res.redirect(url.originalUrl);
     } catch (error) {
@@ -197,6 +202,12 @@ const deleteUrl = async (req, res) => {
 
         if (!url) {
             return res.status(404).json({ error: 'URL not found' });
+        }
+
+        // Check if the URL has expired and delete it
+        if(url.expiresAt && new Date() > url.expiresAt) {
+            await url.deleteOne();
+            return res.status(400).json({ error: 'URL has expired' });
         }
 
         await url.deleteOne();
