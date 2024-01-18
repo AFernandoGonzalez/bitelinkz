@@ -2,7 +2,7 @@ import React from 'react'
 
 export const HeroSection = ({theme}) => {
     return (
-        <div>
+        <div className='h-full flex flex-col justify-center items-center'>
             <h1 className={`text-center text-3xl md:text-6xl font-bold mb-2 ${theme ? '' : 'text-gray-800'}`}>
                 Shorten. Share. Simplify.
             </h1>

@@ -1,4 +1,4 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 import { FeatureCard } from './FeaturesCard'
 
 export const FeaturesSection = ({ theme }) => {
@@ -20,7 +20,11 @@ export const FeaturesSection = ({ theme }) => {
                     <FeatureCard theme={theme} iconClass='fas fa-list' title='Manage Your Links' description='Effortlessly manage and organize your shortened links.' />
                     <FeatureCard theme={theme} iconClass='fas fa-chart-line' title='Campaign Tracking and Analytics' description='Track the performance of your links with detailed analytics.' />
                 </div>
-                <button className='mt-8 bg-blue-500 text-white px-4 py-2 rounded'>Sign Up</button>
+                <div className='flex justify-center mt-8'>
+                    <Link to='/register' className={`text-center text-xl font-semibold p-4 rounded-lg ${theme ? 'bg-gray-800 text-white hover:bg-gray-600' : 'bg-blue-800 text-white hover:bg-blue-500 '}`}>
+                        Learn More
+                    </Link>
+                </div>
             </section>
 
             <section className='max-w-screen mx-4 mt-[5rem] flex flex-wrap justify-between '>
@@ -32,14 +36,14 @@ export const FeaturesSection = ({ theme }) => {
                     </div>
                 </div>
                 <div className='p-2 w-full sm:w-1/3 flex items-center'>
-                    <i className={`fas fa-chart-line text-4xl md:text-6xl  mr-4 md:text-4xl p-2 m-2 mr-4 rounded-lg ${theme ? "bg-gray-700" : "bg-gray-100"}`}></i>
+                    <i className={`fas fa-chart-line text-4xl md:text-4xl  mr-4 md:text-4xl p-2 m-2 mr-4 rounded-lg ${theme ? "bg-gray-700" : "bg-gray-100"}`}></i>
                     <div>
                         <h6 className='text-start text-xl md:text-2xl font-semibold'>Drive Conversion</h6>
                         <p className='text-start'>Increase conversion rates by directing users to targeted content.</p>
                     </div>
                 </div>
                 <div className='p-2 w-full sm:w-1/3 flex items-center'>
-                    <i className={`fas fa-chart-bar text-4xl md:text-6xl  mr-4 md:text-4xl p-2 m-2 mr-4 rounded-lg ${theme ? "bg-gray-700" : "bg-gray-100"}`}></i>
+                    <i className={`fas fa-chart-bar text-4xl md:text-4xl  mr-4 md:text-4xl p-2 m-2 mr-4 rounded-lg ${theme ? "bg-gray-700" : "bg-gray-100"}`}></i>
                     <div>
                         <h6 className='text-start text-xl md:text-2xl font-semibold'>Track Performance</h6>
                         <p className='text-start'>Track the performance of your links with detailed analytics.</p>

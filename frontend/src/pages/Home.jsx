@@ -10,11 +10,13 @@ export const Home = () => {
   const { theme } = useTheme();
   return (
     <div className='m-2'>
-      <HeroSection theme={theme} />
-      <UrlForm theme={theme} />
+      <div className="h-[100%]">
+        <HeroSection theme={theme} />
+        <UrlForm theme={theme} />
+      </div>
       <LatestUrl theme={theme} />
-      <div className="my-[6rem]">
-      <FeaturesSection theme={theme} />
+      <div className="">
+        <FeaturesSection theme={theme} />
       </div>
       <FAQSection />
     </div>

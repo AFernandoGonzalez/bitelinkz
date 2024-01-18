@@ -17,7 +17,7 @@ export const ShortenUrlModal = (
 ) => {
     return (
         <div>
-            <button onClick={openModal}>Update modal</button>
+            
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}

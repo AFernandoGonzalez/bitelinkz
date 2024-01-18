@@ -2,8 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { ManageLinks } from './pages/ManageLinks';
 import Login from './components/auth/login';
-import Logout from './components/auth/logout';
-import Register from './components/auth/register';
+import { Register } from './components/auth/Register'
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -32,8 +31,8 @@ const App = () => {
             }
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<Register />} />
+          {/* <Route path="/logout" element={<Logout />} /> */}
         </Routes>
       </main>
       <Footer theme={theme} />

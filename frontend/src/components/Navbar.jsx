@@ -6,7 +6,7 @@ import LogoLight from '../assets/logo-bgDark.png';
 import LogoDark from '../assets/logo-bgWhite.png';
 
 const Navbar = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [showMenu, setShowMenu] = useState(false);
 
@@ -26,7 +26,7 @@ const Navbar = () => {
         </Link>
       </li>
       <li className={`m-2 text-center text-4xl md:text-lg`}>
-        <Link to="/logout" className={linkClasses} onClick={toggleMenu}>
+        <Link to="/" className={linkClasses} onClick={()=> logout()}>
           Logout
         </Link>
       </li>
