@@ -7,8 +7,8 @@ const Footer = ({ theme }) => {
 
     return (
         <footer className={footerClass}>
-            <p>&copy; {currentYear} SnipSnap</p>
-            <p>Designed with ❤️ by FernandoCodes</p>
+            <p>{currentYear} SnipSnapUrlShortener</p>
+            <p>Designed with ❤️ in NY</p>
         </footer>
     );
 };

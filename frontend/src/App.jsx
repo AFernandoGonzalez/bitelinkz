@@ -20,7 +20,7 @@ const App = () => {
       <header>
         <Navbar />
       </header>
-      <main className='max-w-screen-lg mx-auto mt-8 text-center flex-grow' style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <main className='max-w-screen-lg mx-auto mt-8 text-center flex-grow' >
         <Routes>
           <Route path='/' element={<Home />} />
           <Route
