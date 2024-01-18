@@ -26,9 +26,9 @@ export const LatestUrl = ({ theme }) => {
     };
 
     return (
-        <div className={containerClass}>
+        <div>
             {latestUrl && (
-                <div>
+                <div className={containerClass}>
                     <div className="flex items-center justify-between mb-4">
                         <h5 className={`text-xl font-bold leading-none text-gray-900 ${theme ? "text-white" : ""}`}>Latest Short URL</h5>
                         <Link to="/manage-links" className={`text-sm font-medium  hover:underline`}>
