@@ -25,8 +25,15 @@ const UrlInfo = () => {
   const [updatedOriginalUrl, setUpdatedOriginalUrl] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  // const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+
+
+
+
 
   // console.log("modalData", modalData);
 
@@ -36,12 +43,16 @@ const UrlInfo = () => {
   useEffect(() => {
     setUpdatedOriginalUrl('');
     setUpdatedSelectedDate(null);
-  }, [modalIsOpen]);
+    
+  }, [editModalIsOpen]);
 
   const handleOpenModal = (data) => {
     setModalData(data);
-    setModalIsOpen(true);
+    // setModalIsOpen(true);
+    setEditModalIsOpen(true);
   };
+
+
 
   const handleUpdate = (urlId) => {
 
@@ -64,17 +75,23 @@ const UrlInfo = () => {
 
     }
 
-    setModalIsOpen(false);
+    setEditModalIsOpen(false);
+  };
+
+  const handleDeleteModal = (data) => {
+    setModalData(data);
+    setDeleteModalIsOpen(true);
   };
 
 
-  const handleDelete = (urlId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this URL?');
-
-    if (confirmDelete) {
-      deleteUrl(urlId);
-    }
+  const handleDeleteConfirm = () => {
+    deleteUrl(modalData._id);
+    setDeleteModalIsOpen(false);
   };
+
+
+
+
 
 
   if (!url) {
@@ -90,107 +107,230 @@ const UrlInfo = () => {
   }
 
   return (
-    <div className="mt-8">
-      <div className="mb-4">
-        <label htmlFor="originalUrl" className="mr-2">Filter:</label>
-        <select
-          value={selectedFilter}
-          onChange={(e) => setSelectedFilter(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="All">All</option>
-          <option value="expiresAt">Expiration Date</option>
-          <option value="visits">Visits</option>
-        </select>
-      </div>
-      <div className="">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th className="py-3 px-6 text-left">Original URL</th>
-              <th className="py-3 px-6 text-left">Short URL</th>
-              <th className="py-3 px-6 text-left">URL Views</th>
-              <th className="py-3 px-6 text-left">Expiration Date</th>
-              <th className="py-3 px-6 text-left">QR Code</th>
-              <th className="py-3 px-6 text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUrls.map((url) => (
-              <tr key={url._id}>
-                <td className="py-4 ">{url.originalUrl}</td>
-                <td className="py-4 ">{url.shortUrl}</td>
-                <td className="py-4 ">{url.views}</td>
-                <td className="py-4 ">{formatDate(url.expiresAt)}</td>
-                <td className="py-4 px-6">
-                  <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
-                </td>
-                <td className="py-2 px-2">
-                  <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={() => handleOpenModal(url)}>Update</button>
-                </td>
-                <td className="py-2 px-2">
-                  <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={() => handleDelete(url._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <>
 
-      {modalIsOpen && (
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={() => setModalIsOpen(false)}
-        >
-          {/* Use the modalData to populate the modal content */}
-          <p>{modalData.originalUrl}</p>
-          <p>{modalData.shortUrl}</p>
-          <p>{modalData.expiresAt}</p>
-          {/* Add more modal content as needed */}
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
 
-          <div className="grid gap-4 mb-4 grid-cols-2">
-            <div className="col-span-2">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Original Url</label>
-              <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Type product name" required=""
-                value={updatedOriginalUrl || modalData.originalUrl}
-                onChange={(e) => setUpdatedOriginalUrl(e.target.value)}
-              />
+
+          <div>
+
+            <div className="mb-4">
+              <label htmlFor="originalUrl" className="mr-2">Filter:</label>
+              <select
+                value={selectedFilter}
+                onChange={(e) => setSelectedFilter(e.target.value)}
+                className="p-2 border rounded"
+              >
+                <option value="All">All</option>
+                <option value="expiresAt">Expiration Date</option>
+                <option value="visits">Visits</option>
+              </select>
             </div>
-            <div className="col-span-2">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Short Url</label>
-              {modalData.shortUrl}
-
-            </div>
-            <div className="col-span-2">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Url Views</label>
-              {modalData.views}
-            </div>
-
-            <div className="col-span-2">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiration Date</label>
-              <input type="date" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Type product name" required=""
-                value={updatedSelectedDate || (modalData.expiresAt ? new Date(modalData.expiresAt).toISOString().split('T')[0] : '')}
-
-
-                onChange={(e) => setUpdatedSelectedDate(e.target.value)}
-              />
-            </div>
-            <div className="col-span-2">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">QR CODE</label>
-              <img src={modalData.qrCode} alt="QR Code" className="" />
-            </div>
-
-
           </div>
-          <button type="submit" className="m-2 p-2 rounded text-white inline-flex items-center bg-blue-700 " onClick={() => setModalIsOpen(false)}>
-            Cancel
-          </button>
-          <button type="submit" className="m-2 p-2 rounded text-white inline-flex items-center bg-blue-700 " onClick={() => handleUpdate(modalData._id)}>
-            Update
-          </button>
-        </Modal>
-      )}
-    </div>
+
+
+
+
+          {/* dropdown */}
+
+
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="p-4">
+                  <div className="flex items-center">
+                    <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="sr-only">checkbox</label>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Original Url
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Short Url
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Url Views
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Expiration Date
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  QR Code
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            {filteredUrls.map((url) => (
+              <tbody key={url._id} >
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td className="w-4 p-4">
+                    <div className="flex items-center">
+                      <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                      <label className="sr-only">checkbox</label>
+                    </div>
+                  </td>
+                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {url.originalUrl}
+                  </th>
+                  <td className="px-6 py-4">
+                    {url.shortUrl}
+                  </td>
+                  <td className="px-6 py-4">
+                    {url.visits}
+                  </td>
+                  <td className="px-6 py-4">
+                    {formatDate(url.expiresAt)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
+                  </td>
+                  <td className="flex flex-col px-6 py-4">
+                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => handleOpenModal(url)}>Edit</a>
+                    <a href="#" className="font-medium text-red-600 dark:text-blue-500 hover:underline" onClick={() => handleDeleteModal(url)}>Delete</a>
+                  </td>
+
+                </tr>
+
+              </tbody>
+            ))}
+          </table>
+
+        </div>
+      </div>
+      <div>
+        {editModalIsOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+            <div className="relative p-4 md:max-w-3xl w-full mx-auto">
+              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 grid grid-cols-1 gap-4 p-4 md:p-5 text-center">
+                <div>
+                  <div className='py-4'>
+                    <label className=" w-full text-lg font-semibold">ORIGINAL URL</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg w-full p-4"
+                      placeholder="Type product name"
+                      required=""
+                      value={updatedOriginalUrl || modalData.originalUrl}
+                      onChange={(e) => setUpdatedOriginalUrl(e.target.value)}
+                    />
+                  </div>
+                  <div className='py-4'>
+                    <label className="w-full text-lg font-semibold">SHORT URL</label>
+                    <label className="inline-flex items-center justify-center w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
+                      <div className="block">
+                        <div className="w-full  text-lg font-semibold">{modalData.shortUrl}
+                        </div>
+                        
+                      </div>
+                      
+                    </label>
+                  </div>
+                </div>
+                <div className='md:grid md:grid-cols-2'>
+                  <div className='flex flex-col justify-around'>
+                    <div>
+                      <label className="w-full text-lg font-semibold">VIEW COUNT</label>
+                      <label className="  inline-flex items-center justify-center w-full p-2 text-gray-900 bg-white border border-gray-200 rounded-lg  dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 ">
+                        <div className="block">
+                          <div className="w-full  text-lg font-semibold">{modalData.visits}
+                          </div>
+
+                        </div>
+
+                      </label>
+
+                    </div>
+                    <div>
+                      
+                      <label className="w-full text-lg font-semibold">EXPIRATION DATE</label>
+                      <input
+                        type="date"
+                        name="name"
+                        id="name"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                        placeholder="Type product name"
+                        required=""
+                        value={updatedSelectedDate || (modalData.expiresAt ? new Date(modalData.expiresAt).toISOString().split('T')[0] : '')}
+                        onChange={(e) => setUpdatedSelectedDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className='flex flex-col items-center'>
+                    
+                    <label className="w-full text-lg font-semibold">QR CODE</label>
+                    <img src={modalData.qrCode} alt="QR Code" className="" />
+                  </div>
+                </div>
+                
+
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 mx-2"
+                    onClick={() => setEditModalIsOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="text-white bg-blue-700 focus:outline-none f rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 mx-2 "
+                    onClick={() => handleUpdate(modalData._id)}
+                  >
+                    Update
+                  </button>
+                </div>
+
+              </div>
+              
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div>
+        {deleteModalIsOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+            <div className="relative p-4">
+              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button
+                  type="button"
+                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  onClick={() => setDeleteModalIsOpen(false)}
+                >
+                  <span className="sr-only">Close modal</span>
+                </button>
+                <div className="p-4 md:p-5 text-center">
+                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    Are you sure you want to delete this short URL?
+                  </h3>
+                  <button
+                    type="button"
+                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
+                    onClick={handleDeleteConfirm}
+                  >
+                    Yes, I'm sure
+                  </button>
+                  <button
+                    type="button"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                    onClick={() => setDeleteModalIsOpen(false)}
+                  >
+                    No, cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+    </>
   );
 };
 
