@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useUrl } from '../context/UrlContext';
 import { format, parseISO } from 'date-fns';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import "react-datepicker/dist/react-datepicker.css";
 import './UrlInfo.css';
 
@@ -43,7 +44,7 @@ const UrlInfo = () => {
   useEffect(() => {
     setUpdatedOriginalUrl('');
     setUpdatedSelectedDate(null);
-    
+
   }, [editModalIsOpen]);
 
   const handleOpenModal = (data) => {
@@ -75,6 +76,15 @@ const UrlInfo = () => {
 
     }
 
+    toast.success('Url updated successfully', {
+      position: 'top-center',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+    });
+
+
     setEditModalIsOpen(false);
   };
 
@@ -87,7 +97,26 @@ const UrlInfo = () => {
   const handleDeleteConfirm = () => {
     deleteUrl(modalData._id);
     setDeleteModalIsOpen(false);
+    toast.success('Url deleted successfully', {
+      position: 'top-center',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+    });
   };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(modalData.shortUrl);
+    toast.success('Copied to clipboard', {
+      position: 'top-center',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+    });
+  };
+
 
 
 
@@ -224,11 +253,16 @@ const UrlInfo = () => {
                     <label className="w-full text-lg font-semibold">SHORT URL</label>
                     <label className="inline-flex items-center justify-center w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
                       <div className="block">
-                        <div className="w-full  text-lg font-semibold">{modalData.shortUrl}
+                        <div className="w-full mx-4 flex justify-around items-center text-lg font-semibold">       
+                          <p>{modalData.shortUrl}</p> 
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 p-2 rounded dark:bg-green-900 dark:text-green-300"
+                          onClick={copyToClipboard}
+                          >Copy</span>
+
                         </div>
-                        
+
                       </div>
-                      
+
                     </label>
                   </div>
                 </div>
@@ -247,7 +281,7 @@ const UrlInfo = () => {
 
                     </div>
                     <div>
-                      
+
                       <label className="w-full text-lg font-semibold">EXPIRATION DATE</label>
                       <input
                         type="date"
@@ -262,12 +296,12 @@ const UrlInfo = () => {
                     </div>
                   </div>
                   <div className='flex flex-col items-center'>
-                    
+
                     <label className="w-full text-lg font-semibold">QR CODE</label>
                     <img src={modalData.qrCode} alt="QR Code" className="" />
                   </div>
                 </div>
-                
+
 
                 <div className="flex justify-center">
                   <button
@@ -287,7 +321,7 @@ const UrlInfo = () => {
                 </div>
 
               </div>
-              
+
             </div>
           </div>
         )}
