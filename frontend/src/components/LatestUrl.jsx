@@ -20,7 +20,6 @@ export const LatestUrl = ({ theme }) => {
             await navigator.clipboard.writeText(latestUrl.originalUrl);
             toast.success('Copied to clipboard!');
         } catch (error) {
-            console.error(error.message);
             toast.error('Failed to copy to clipboard');
         }
     };

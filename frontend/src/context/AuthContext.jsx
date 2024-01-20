@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../constants';
+import { toast } from 'react-toastify';
 
 const AuthContext = createContext();
 
@@ -52,9 +53,24 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/users/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
             setAuthData(response);
+            toast.success('Login Successful', {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
             
         } catch (err) {
-            console.error(err);
+            toast.error(
+                err.response.data.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            }
+            )
         }
     };
 
@@ -62,8 +78,23 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/users/register`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
             setAuthData(response);
+            toast.success('Login Successful', {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
         } catch (err) {
-            console.error(err);
+            toast.error(
+                err.response.data.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            }
+            )
         }
     };
 
@@ -71,6 +102,13 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        toast.success('Logout Successful', {
+            position: 'top-center',
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+        });
     };
 
     const value = {

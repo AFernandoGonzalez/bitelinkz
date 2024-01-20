@@ -11,7 +11,6 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleMenu = () => {
-    console.log('toggleMenu');
     setShowMenu(!showMenu);
   };
 
@@ -70,7 +69,7 @@ const Navbar = () => {
         </div>
 
         <div className="md:hidden" id="navbar-mobile">
-          <i className="fas fa-bars " onClick={toggleMenu}></i>
+          <i className="fas fa-bars " onClick={() =>toggleMenu()}></i>
           {showMenu && (
             <div className={`bg-${theme ? 'gray-800' : 'white'} fixed inset-0 z-10`}>
               <div className="p-6 h-full flex flex-col justify-center items-center">

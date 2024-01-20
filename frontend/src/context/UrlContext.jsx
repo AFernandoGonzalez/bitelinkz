@@ -2,6 +2,7 @@ import  { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../constants';
 import { useAuth } from './AuthContext';
+import { toast } from 'react-toastify';
 
 const UrlContext = createContext();
 
@@ -26,7 +27,6 @@ export const UrlProvider = ({ children }) => {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             } else {
                 headers['guest-user-id'] = guestUserId;
-                console.log('frontend : guestUserId', guestUserId);
             }
 
             const response = await fetch('http://localhost:8000/info/userUrls', {
@@ -41,7 +41,7 @@ export const UrlProvider = ({ children }) => {
                 throw new Error(`Failed to fetch user's URLs. Status: ${response.status}`);
             }
         } catch (error) {
-            console.error(error);
+            throw new Error(error.message);
         }
     };
 
@@ -58,7 +58,6 @@ export const UrlProvider = ({ children }) => {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             } else {
                 headers['guest-user-id'] = guestUserId;
-                console.log('frontend : guestUserId', guestUserId);
             }
 
             const expirationDate = new Date();
@@ -81,11 +80,23 @@ export const UrlProvider = ({ children }) => {
 
             // Update the URL array without replacing it
             setUrl((prevUrls) => [...prevUrls, data]);
+            toast.success('Short URL created successfully', {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
+            return data; 
 
-            return data; // Return the created URL data
         } catch (error) {
-            console.error(error);
-            throw error; // Rethrow the error to be caught by the caller
+            toast.error(error.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
         }
     };
 
@@ -117,8 +128,16 @@ export const UrlProvider = ({ children }) => {
             setUrl((prevUrls) =>
                 prevUrls.map((url) => (url._id === urlId ? updatedUrl : url))
             );
+            
         } catch (error) {
-            console.error(error);
+            toast.error(error.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
+
         }
     };
 
@@ -143,8 +162,22 @@ export const UrlProvider = ({ children }) => {
 
             // Remove the deleted URL from the state
             setUrl((prevUrls) => prevUrls.filter((url) => url._id !== urlId));
+            toast.success('URL deleted successfully', {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
         } catch (error) {
-            console.error(error);
+            toast.error(error.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
+
         }
     };
 
@@ -172,39 +205,25 @@ export const UrlProvider = ({ children }) => {
             // Remove the deleted URLs from the state
             setUrl((prevUrls) => prevUrls.filter((url) => !urlIds.includes(url._id)));
             
-            // const fetchUserUrls = async () => {
-            //     try {
-            //         const headers = {};
-
-            //         // Check if the user is logged in
-            //         if (currentUser && currentUser.token) {
-            //             headers['Authorization'] = `Bearer ${currentUser.token}`;
-            //         } else {
-            //             headers['guest-user-id'] = guestUserId;
-            //             console.log('frontend : guestUserId', guestUserId);
-            //         }
-
-            //         const response = await fetch('http://localhost:8000/info/userUrls', {
-            //             method: 'GET',
-            //             headers,
-            //         });
-
-            //         if (response.ok) {
-            //             const data = await response.json();
-            //             setUrl(data);
-            //         } else {
-            //             throw new Error(`Failed to fetch user's URLs. Status: ${response.status}`);
-            //         }
-            //     } catch (error) {
-            //         console.error(error);
-            //     }
-            // };
+            toast.success('URLs deleted successfully', {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
 
             await fetchUserUrls();
 
 
         } catch (error) {
-            console.error(error);
+            toast.error(error.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
         }
     };
 

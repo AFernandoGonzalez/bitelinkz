@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUrl } from '../context/UrlContext';
+import { toast } from 'react-toastify';
 
 export const UrlForm = ({ theme }) => {
   const [originalUrl, setOriginalUrl] = useState('');
@@ -15,14 +16,32 @@ export const UrlForm = ({ theme }) => {
       if (!url.some((existingUrl) => existingUrl.shortUrl === data.shortUrl)) {
         // Clear the input field
         setOriginalUrl('');
+        toast.success('Short URL created successfully', {
+          position: 'top-center',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+        });
       } else {
-        console.log('URL already exists');
         setOriginalUrl('');
-        throw new Error('URL already exists');
+        toast.error('URL already exists', {
+          position: 'top-center',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+        });
       }
     } catch (error) {
-      console.error(error.message);
       setOriginalUrl('');
+      toast.error(error.message, {
+        position: 'top-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+      });
     }
   };
 

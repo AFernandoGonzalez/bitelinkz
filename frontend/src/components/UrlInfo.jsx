@@ -41,14 +41,6 @@ const UrlInfo = () => {
   const [selectedUrls, setSelectedUrls] = useState([]);
 
 
-
-
-
-
-  // console.log("modalData", modalData);
-
-  // console.log(new Date(url[0]?.expiresAt).toISOString().split('T')[0]);
-
   // Reset when the modal is opened or closed
   useEffect(() => {
     setUpdatedOriginalUrl('');
@@ -56,7 +48,6 @@ const UrlInfo = () => {
 
   }, [editModalIsOpen]);
 
-  console.log('url', url);
 
 
   const handleOpenModal = (data) => {
@@ -67,17 +58,12 @@ const UrlInfo = () => {
 
   const handleUpdate = (urlId) => {
 
-    console.log('handleUpdate', urlId);
-
     if (updatedOriginalUrl || updatedSelectedDate) {
       const currentDate = new Date();
-      console.log('currentDate', currentDate);
       const expirationDate = new Date(currentDate);
-      console.log('expirationDate', expirationDate);
       expirationDate.setDate(currentDate.getDate() + 7);
 
       const formattedDate = format(new Date(updatedSelectedDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-      console.log('formattedDate', formattedDate);
 
       const urlToUpdate = updatedOriginalUrl !== '' ? updatedOriginalUrl : modalData.originalUrl;
 
@@ -107,13 +93,6 @@ const UrlInfo = () => {
   const handleDeleteConfirm = () => {
     deleteUrl(modalData._id);
     setDeleteModalIsOpen(false);
-    toast.success('Url deleted successfully', {
-      position: 'top-center',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      draggable: true,
-    });
   };
 
   const handleBulkDelete = () => {
@@ -161,7 +140,6 @@ const UrlInfo = () => {
   };
 
   const handleCheckboxChange = (urlId) => {
-    console.log('handleCheckboxChange', urlId);
     setSelectedUrls((prevSelected) => {
       if (prevSelected.includes(urlId)) {
         return prevSelected.filter((id) => id !== urlId);

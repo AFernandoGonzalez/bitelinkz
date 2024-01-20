@@ -24,7 +24,15 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.registerUser = async (req, res) => {
+
     try {
+
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         let user = new User({
@@ -46,13 +54,3 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// exports.logoutUser = async (req, res) => {
-//     try {
-//         // Send back the user data and token
-//         res.status(200).json({ message: "User logged out successfully" });
-//     }
-//     catch (error) {
-//         console.error("Error in logoutUser:", error.message);
-//         res.status(500).json({ message: error.message });
-//     }
-// }
