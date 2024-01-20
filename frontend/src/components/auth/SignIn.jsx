@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
-    const { login } = useAuth();
+    const { login, currentUser } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (currentUser) {
+            navigate('/manage-links');
+        }
+    }, [currentUser, navigate]);
+
     const handleRegister = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         await login(email, password);
         navigate('/manage-links');
     };
