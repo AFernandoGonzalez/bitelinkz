@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }) => {
                 closeOnClick: true,
                 draggable: true,
             });
-            console.log("response: ", response);
         } catch (err) {
             toast.error(
                 err.response.data.message, {

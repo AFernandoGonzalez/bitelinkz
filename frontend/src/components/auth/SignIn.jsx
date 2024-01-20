@@ -9,7 +9,6 @@ export const SignIn = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("login: ", currentUser);
         if (currentUser) {
             navigate('/manage-links');
         }
