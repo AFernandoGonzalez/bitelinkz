@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/users/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
+            const response = await axios.post(`${API_BASE_URL}/api/users/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
             setAuthData(response);
             toast.success('Login Successful', {
                 position: 'top-center',
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (email, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/users/register`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
+            const response = await axios.post(`${API_BASE_URL}/api/users/register`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
             setAuthData(response);
             toast.success('Login Successful', {
                 position: 'top-center',

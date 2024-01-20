@@ -4,6 +4,7 @@ import { API_BASE_URL } from '../constants';
 import { useAuth } from './AuthContext';
 import { toast } from 'react-toastify';
 
+
 const UrlContext = createContext();
 
 export const useUrl = () => {
@@ -29,7 +30,7 @@ export const UrlProvider = ({ children }) => {
                 headers['guest-user-id'] = guestUserId;
             }
 
-            const response = await fetch('http://localhost:8000/info/userUrls', {
+            const response = await fetch(`${API_BASE_URL}/info/userUrls`, {
                 method: 'GET',
                 headers,
             });
@@ -63,7 +64,7 @@ export const UrlProvider = ({ children }) => {
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 7);
 
-            const response = await fetch('http://localhost:8000/shorten', {
+            const response = await fetch(`${API_BASE_URL}/shorten`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +112,7 @@ export const UrlProvider = ({ children }) => {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             }
 
-            const response = await fetch(`http://localhost:8000/update/${urlId}`, {
+            const response = await fetch(`${API_BASE_URL}/update/${urlId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,7 +151,7 @@ export const UrlProvider = ({ children }) => {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             }
 
-            const response = await fetch(`http://localhost:8000/delete/${urlId}`, {
+            const response = await fetch(`${API_BASE_URL}/delete/${urlId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ export const UrlProvider = ({ children }) => {
                 headers['Authorization'] = `Bearer ${currentUser.token}`;
             }
 
-            const response = await fetch('http://localhost:8000/delete/bulkDelete', {
+            const response = await fetch(`${API_BASE_URL}/delete/bulkDelete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
