@@ -33,6 +33,21 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
+        // Validate the password
+        const validatePassword = (password) => {
+            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                throw new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number');
+            }
+            return password;
+        }
+
+        try {
+            validatePassword(req.body.password);
+        }   catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         let user = new User({

@@ -7,19 +7,26 @@ const urlRoutes = require('./src/routes/url');
 const userAuthRoutes = require('./src/routes/userAuth');
 const cors = require('cors');
 
-connectDB();
-const app = express();
-const port = process.env.PORT || 8000;
+const setUpApp = () => {
 
-app.use(cors());
-app.use(bodyParser.json());
+    connectDB();
+    const app = express();
+    // const port = process.env.PORT || 8000;
 
-app.use('', urlRoutes);
-app.use('/api/users', userAuthRoutes);
+    app.use(cors());
+    app.use(bodyParser.json());
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+    app.use('', urlRoutes);
+    app.use('/api/users', userAuthRoutes);
+
+    return app;
+
 }
-);
+
+module.exports = setUpApp;
+// app.listen(port, () => {
+//     console.log(`Server listening on port ${port}`);
+// }
+// );
 
 

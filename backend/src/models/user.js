@@ -1,6 +1,7 @@
-// models/user.js
-
 const mongoose = require('mongoose');
+
+
+
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -12,14 +13,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        lowercase: true, // Converts to lowercase
+        lowercase: true,
     },
     password: {
         type: String,
         required: true,
         trim: true,
         minlength: 7,
-
     },
     isActive: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },

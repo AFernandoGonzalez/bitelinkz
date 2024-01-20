@@ -8,6 +8,7 @@ import { useTheme } from './context/Theme';
 import './App.css';
 import { Register } from './components/auth/Register';
 import { SignIn } from './components/auth/SignIn';
+import { ErrorPage } from './components/ErrorPage';
 
 const App = () => {
   const { theme } = useTheme();
@@ -23,6 +24,7 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<SignIn />} />
           <Route path='/register' element={<Register />} />
+          <Route path='*' element={<ErrorPage theme={theme} />} />
           <Route
             path="/manage-links"
             element={
