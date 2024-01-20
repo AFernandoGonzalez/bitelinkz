@@ -80,15 +80,17 @@ export const UrlProvider = ({ children }) => {
 
             // Update the URL array without replacing it
             setUrl((prevUrls) => [...prevUrls, data]);
-            toast.success('Short URL created successfully', {
-                position: 'top-center',
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-            });
-            return data; 
+            // toast.success('Short URL created successfully', {
+            //     position: 'top-center',
+            //     autoClose: 2000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     draggable: true,
+            // });
 
+            // await fetchUserUrls();
+
+            return data; 
         } catch (error) {
             toast.error(error.message, {
                 position: 'top-center',

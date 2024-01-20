@@ -16,6 +16,7 @@ export const UrlForm = ({ theme }) => {
       if (!url.some((existingUrl) => existingUrl.shortUrl === data.shortUrl)) {
         // Clear the input field
         setOriginalUrl('');
+        
         toast.success('Short URL created successfully', {
           position: 'top-center',
           autoClose: 2000,
@@ -25,7 +26,7 @@ export const UrlForm = ({ theme }) => {
         });
       } else {
         setOriginalUrl('');
-        toast.error('URL already exists', {
+        toast.warn('URL already exists', {
           position: 'top-center',
           autoClose: 2000,
           hideProgressBar: false,

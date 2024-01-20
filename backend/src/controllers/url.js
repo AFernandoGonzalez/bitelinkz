@@ -63,12 +63,11 @@ const shortenUrl = async (req, res) => {
         const shortCode = generateShortCode();
         // Construct the shortened URL
         const shortenedUrl = `${process.env.BASE_URL}/${shortCode}`;
-
+        console.log('shortenedUrl', process.env.BASE_URL);
 
         // Generate QR code
         const qrCodeData = `${process.env.BASE_URL}/${shortCode}`;
         const qrCode = await qr.toDataURL(qrCodeData);
-
 
         // Parse expiration date if provided
         const expirationDate = req.body.expiresAt ? new Date(req.body.expiresAt) : null;
