@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/users/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
             setAuthData(response);
+            
         } catch (err) {
             console.error(err);
         }

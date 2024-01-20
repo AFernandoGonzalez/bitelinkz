@@ -4,6 +4,7 @@ import { CSVLink } from "react-csv";
 import { useUrl } from '../context/UrlContext';
 import { format, parseISO } from 'date-fns';
 import Modal from 'react-modal';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import "react-datepicker/dist/react-datepicker.css";
 import './UrlInfo.css';
@@ -185,16 +186,18 @@ const UrlInfo = () => {
     );
   }
 
-  if (selectedFilter === 'expiresAt') {
+  if (selectedFilter === 'All') {
+    filteredUrls = filteredUrls.sort((a, b) => a.createdAt.localeCompare(b.expiresAt));
+  } else if (selectedFilter === 'expiresAt') {
     filteredUrls = filteredUrls.sort((a, b) => a.expiresAt.localeCompare(b.expiresAt));
   } else if (selectedFilter === 'visits') {
     filteredUrls = filteredUrls.sort((a, b) => b.visits - a.visits);
   }
 
   return (
-    <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
-      <div className="">
-        <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+    <div>
+      <div className="sm:flex sm:flex-row sm:flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+        <div className="flex items-center justify-between w-full flex-wrap">
 
           <div className="flex items-center justify-between w-full ">
             <button
@@ -328,6 +331,9 @@ const UrlInfo = () => {
                   Url Views
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Created Date
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Expiration Date
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -357,10 +363,16 @@ const UrlInfo = () => {
 
                   </th>
                   <td className="px-6 py-4">
-                    {url.shortUrl}
+                    <a href={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                      {url.shortUrl}
+                    </a>
+
                   </td>
                   <td className="px-6 py-4">
                     {url.visits}
+                  </td>
+                  <td className="px-6 py-4">
+                    {formatDate(url.createdAt)}
                   </td>
                   <td className="px-6 py-4">
                     {formatDate(url.expiresAt)}
@@ -409,7 +421,7 @@ const UrlInfo = () => {
                     <label className="inline-flex items-center justify-center w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
                       <div className="block">
                         <div className="w-full mx-4 flex justify-around items-center text-lg font-semibold">
-                          <p>{modalData.shortUrl}</p>
+                          <Link>{modalData.shortUrl}</Link>
                           <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 p-2 rounded dark:bg-green-900 dark:text-green-300"
                             onClick={copyToClipboard}
                           >Copy</span>
