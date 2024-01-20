@@ -17,35 +17,35 @@ export const UrlProvider = ({ children }) => {
     const [url, setUrl] = useState([]);
     const { currentUser, guestUserId } = useAuth();
 
-    useEffect(() => {
-        const fetchUserUrls = async () => {
-            try {
-                const headers = {};
+    const fetchUserUrls = async () => {
+        try {
+            const headers = {};
 
-                // Check if the user is logged in
-                if (currentUser && currentUser.token) {
-                    headers['Authorization'] = `Bearer ${currentUser.token}`;
-                } else {
-                    headers['guest-user-id'] = guestUserId;
-                    console.log('frontend : guestUserId', guestUserId);
-                }
-
-                const response = await fetch('http://localhost:8000/info/userUrls', {
-                    method: 'GET',
-                    headers,
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setUrl(data);
-                } else {
-                    throw new Error(`Failed to fetch user's URLs. Status: ${response.status}`);
-                }
-            } catch (error) {
-                console.error(error);
+            // Check if the user is logged in
+            if (currentUser && currentUser.token) {
+                headers['Authorization'] = `Bearer ${currentUser.token}`;
+            } else {
+                headers['guest-user-id'] = guestUserId;
+                console.log('frontend : guestUserId', guestUserId);
             }
-        };
 
+            const response = await fetch('http://localhost:8000/info/userUrls', {
+                method: 'GET',
+                headers,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUrl(data);
+            } else {
+                throw new Error(`Failed to fetch user's URLs. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
         fetchUserUrls();
     }, [currentUser, guestUserId, setUrl]);
 
@@ -148,12 +148,73 @@ export const UrlProvider = ({ children }) => {
         }
     };
 
+    const deleteUrlBulk = async (urlIds) => {
+        try {
+            const headers = {};
+            if (currentUser && currentUser.token) {
+                headers['Authorization'] = `Bearer ${currentUser.token}`;
+            }
+
+            const response = await fetch('http://localhost:8000/delete/bulkDelete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...headers,
+                },
+                body: JSON.stringify({ urlIds }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete URLs. Status: ${response.status}`);
+            }
+            
+
+            // Remove the deleted URLs from the state
+            setUrl((prevUrls) => prevUrls.filter((url) => !urlIds.includes(url._id)));
+            
+            // const fetchUserUrls = async () => {
+            //     try {
+            //         const headers = {};
+
+            //         // Check if the user is logged in
+            //         if (currentUser && currentUser.token) {
+            //             headers['Authorization'] = `Bearer ${currentUser.token}`;
+            //         } else {
+            //             headers['guest-user-id'] = guestUserId;
+            //             console.log('frontend : guestUserId', guestUserId);
+            //         }
+
+            //         const response = await fetch('http://localhost:8000/info/userUrls', {
+            //             method: 'GET',
+            //             headers,
+            //         });
+
+            //         if (response.ok) {
+            //             const data = await response.json();
+            //             setUrl(data);
+            //         } else {
+            //             throw new Error(`Failed to fetch user's URLs. Status: ${response.status}`);
+            //         }
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // };
+
+            await fetchUserUrls();
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const value = {
         url,
         setUrl,
         createShortUrl,
         updateUrl,
         deleteUrl,
+        deleteUrlBulk, 
     };
 
     return <UrlContext.Provider value={value}>{children}</UrlContext.Provider>;

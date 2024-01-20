@@ -3,7 +3,7 @@ import UrlInfo from '../components/UrlInfo'
 
 export const ManageLinks = () => {
   return (
-    <div>
+    <div className='m-4'>
       <UrlInfo />
     </div>
   )

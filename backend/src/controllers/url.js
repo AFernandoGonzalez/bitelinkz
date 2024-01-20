@@ -221,7 +221,36 @@ const deleteUrl = async (req, res) => {
 };  
 
 
+const bulkDeleteUrls = async (req, res) => {
+    const { urlIds } = req.body;
+    const userId = req.userId;
+
+    console.log('urlIds', urlIds);
+
+    try {
+        // Ensure user is authenticated
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        // Extract _id values from the array of objects
+        const extractedIds = urlIds.map((url) => url._id);
+
+        // Find and delete URLs based on the provided IDs
+        const deletedUrls = await UrlModel.deleteMany({ _id: { $in: extractedIds }, user: userId });
+
+        if (deletedUrls.deletedCount === 0) {
+            return res.status(404).json({ error: 'URLs not found or not authorized' });
+        }
+
+        return res.status(200).json({ message: 'URLs deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error.message });
+    }
+};
 
 
 
-module.exports = { shortenUrl, redirectToOriginalUrl, shortUrlByUser, updateUrl, deleteUrl };
+
+module.exports = { shortenUrl, redirectToOriginalUrl, shortUrlByUser, updateUrl, deleteUrl, bulkDeleteUrls };

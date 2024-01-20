@@ -13,8 +13,7 @@ const App = () => {
   const { theme } = useTheme();
 
   return (
-    <div className={`app 
-      ${theme ? "dark-mode bg-gray-900 text-white" : "light-mode bg-white"} `}
+    <div className={`app ${theme ? "dark-mode bg-gray-900 text-white" : "light-mode bg-white"} `}
     >
       <header>
         <Navbar />
