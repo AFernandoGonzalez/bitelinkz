@@ -31,10 +31,34 @@ export const LatestUrl = ({ theme }) => {
     const linkClass = `font-bold hover:underline`;
 
 
-    const handleCopyClick = async () => {
+    const handleCopyOriginalUrl = async () => {
         try {
             await navigator.clipboard.writeText(latestUrl.originalUrl);
-            toast.success('Copied to clipboard!');
+            toast.success('Original URL Copied to clipboard!', {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } catch (error) {
+            toast.error('Failed to copy to clipboard');
+        }
+    };
+    const handleCopyShortUrl = async () => {
+        try {
+            await navigator.clipboard.writeText(latestUrl.shortUrl);
+            toast.success('Short URL Copied to clipboard!', {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         } catch (error) {
             toast.error('Failed to copy to clipboard');
         }
@@ -63,7 +87,7 @@ export const LatestUrl = ({ theme }) => {
                             {latestUrl?.originalUrl}
                         </p>
                         <div className="inline-flex items-center text-base font-semibold  ">
-                            <button onClick={handleCopyClick} className={linkClass}>
+                            <button onClick={handleCopyOriginalUrl} className={linkClass}>
                                 Copy
                             </button>
                         </div>
@@ -86,7 +110,7 @@ export const LatestUrl = ({ theme }) => {
                             </Link>
                         </p>
                         <div className="inline-flex items-center text-base font-semibold">
-                            <button onClick={handleCopyClick} className={linkClass}>
+                            <button onClick={handleCopyShortUrl} className={linkClass}>
                                 Copy
                             </button>
                         </div>
@@ -119,19 +143,41 @@ export const LatestUrl = ({ theme }) => {
                                 return (
 
 
-                                    <tr key={urlList._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {urlList.originalUrl}
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            {urlList.shortUrl}
+                                    <tr key={urlList._id} className="bg-white border-b ">
+                                        <td className="px-6 py-4 font-medium text-gray-900"
+                                        >
+                                            <div className="flex justify-between ">
+                                                <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
+
+                                                    {urlList.originalUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.originalUrl}
+                                                </Link>
+
+                                                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
+                                                    onClick={handleCopyOriginalUrl}
+                                                >Copy</span>
+                                            </div>
+
+
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                                            <div className="flex justify-between">
+                                                <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
+
+                                                    {urlList.shortUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.shortUrl}
+                                                </Link>
+
+                                                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
+                                                    onClick={handleCopyShortUrl}
+                                                >Copy</span>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {formatDate(urlList.expiresAt)}
                                         </td>
 
-                                        <td className="px-6 py-4 text-right">
-                                            <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Copy</a>
+                                        <td className="px-6 py-4 ">
+                                            <a href="#" className="font-medium text-blue-600 hover:underline"
+                                            >Share it</a>
                                         </td>
                                     </tr>
                                 )

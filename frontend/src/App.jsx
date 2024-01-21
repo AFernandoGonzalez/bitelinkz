@@ -19,7 +19,7 @@ const App = () => {
       <header>
         <Navbar />
       </header>
-      <main className='max-w-screen-lg mx-auto mt-8 text-center flex-grow' >
+      <main className='w-[100%] md:max-w-screen-lg mx-auto mt-8 text-center flex-grow' >
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<SignIn />} />
