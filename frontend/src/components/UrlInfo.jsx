@@ -150,9 +150,6 @@ const UrlInfo = () => {
     });
   };
 
-
-
-
   if (!url) {
     return null;
   }

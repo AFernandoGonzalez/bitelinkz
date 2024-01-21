@@ -9,41 +9,11 @@ export const UrlForm = ({ theme }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const data = await createShortUrl(originalUrl);
+    const trimmedUrl = originalUrl.trim();
 
-      // Check if the URL already exists in the array
-      if (!url.some((existingUrl) => existingUrl.shortUrl === data.shortUrl)) {
-        // Clear the input field
-        setOriginalUrl('');
-        
-        toast.success('Short URL created successfully', {
-          position: 'top-center',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-        });
-      } else {
-        setOriginalUrl('');
-        toast.warn('URL already exists', {
-          position: 'top-center',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-        });
-      }
-    } catch (error) {
-      setOriginalUrl('');
-      toast.error(error.message, {
-        position: 'top-center',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-      });
-    }
+    await createShortUrl(trimmedUrl);
+    setOriginalUrl('');
+
   };
 
   // Conditionally apply dark or light theme styles
@@ -61,10 +31,11 @@ export const UrlForm = ({ theme }) => {
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row items-stretch">
         <input
           type="text"
-          placeholder="https://example.com"
+          placeholder="https://google.com"
           value={originalUrl}
           onChange={(e) => setOriginalUrl(e.target.value)}
           className={inputClass}
+          required
         />
         <button type="submit" className={buttonClass}>
           Short Link

@@ -73,33 +73,31 @@ export const UrlProvider = ({ children }) => {
                 body: JSON.stringify({ originalUrl, expiresAt: expirationDate.toISOString() }),
             });
 
-            if (!response.ok) {
-                throw new Error(`Failed to shorten URL. Status: ${response.status}`);
+            if(!response.ok) {
+                const errorData = await response.json();
+                toast.error(errorData.error, {
+                    position: 'top-center',
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                });
             }
 
             const data = await response.json();
 
             // Update the URL array without replacing it
             setUrl((prevUrls) => [...prevUrls, data]);
-            // toast.success('Short URL created successfully', {
-            //     position: 'top-center',
-            //     autoClose: 2000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     draggable: true,
-            // });
-
-            // await fetchUserUrls();
-
-            return data; 
-        } catch (error) {
-            toast.error(error.message, {
+            toast.success('URL Created successfully', {
                 position: 'top-center',
                 autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 draggable: true,
             });
+            return data; 
+        } catch (error) {
+            console.log(error.message);
         }
     };
 

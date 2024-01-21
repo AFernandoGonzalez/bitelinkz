@@ -37,8 +37,13 @@ const shortenUrl = async (req, res) => {
         return res.status(400).json({ error: `URL cannot contain ${isBaseUrl}` });
     }
 
+    // check if the url already exists in the database
+  
+
     try {
         let existingUrl;
+
+        console.log('existingUrl', existingUrl);
 
         if (userId) {
             existingUrl = await UrlModel.findOne({ user: userId, originalUrl });
@@ -56,8 +61,15 @@ const shortenUrl = async (req, res) => {
 
         if (existingUrl && userId) {
             // If the URL already exists, return the existing short URL
-            return res.status(200).json({ url: existingUrl, qrCode: null });
+            // return res.status(200).json({ url: existingUrl, qrCode: null });
+            return res.status(400).json({ error: 'URL already exists' });
+        } else if (existingUrl && guestUserId) {
+            // If the URL already exists, return the existing short URL
+            // return res.status(200).json({ url: existingUrl, qrCode: null });
+            return res.status(400).json({ error: 'URL already exists' });
         }
+
+
 
         // Generate a short code
         const shortCode = generateShortCode();
