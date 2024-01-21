@@ -30,6 +30,9 @@ export const AuthProvider = ({ children }) => {
         return storedGuestUserId || generateUniqueId();
     });
 
+
+    
+
     useEffect(() => {
         // Store the guest user ID in localStorage
         localStorage.setItem('guestUserId', guestUserId);
