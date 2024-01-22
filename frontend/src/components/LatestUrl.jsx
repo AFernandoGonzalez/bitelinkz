@@ -64,9 +64,11 @@ export const LatestUrl = ({ theme }) => {
         }
     };
 
+    console.log(url.length > 0);
+
     return (
         <div>
-            {currentUser ? (
+            {currentUser && url.length > 0 ? (
 
                 <div className={containerClass}>
                     <div className="flex items-center justify-between mb-4">
@@ -118,72 +120,75 @@ export const LatestUrl = ({ theme }) => {
                 </div>
 
             ) : (
-
+                
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    Original URL
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Shorten URL
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Expiration Date
-                                </th>
+                    {url.length > 0 ? (
+                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">
+                                            Original URL
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Shorten URL
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Expiration Date
+                                        </th>
 
-                                <th scope="col" className="px-6 py-3">
-                                    <span >Action</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {url?.map((urlList) => {
-                                return (
-
-
-                                    <tr key={urlList._id} className="bg-white border-b ">
-                                        <td className="px-6 py-4 font-medium text-gray-900"
-                                        >
-                                            <div className="flex justify-between ">
-                                                <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
-
-                                                    {urlList.originalUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.originalUrl}
-                                                </Link>
-
-                                                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
-                                                    onClick={handleCopyOriginalUrl}
-                                                >Copy</span>
-                                            </div>
-
-
-                                        </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                            <div className="flex justify-between">
-                                                <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
-
-                                                    {urlList.shortUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.shortUrl}
-                                                </Link>
-
-                                                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
-                                                    onClick={handleCopyShortUrl}
-                                                >Copy</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {formatDate(urlList.expiresAt)}
-                                        </td>
-
-                                        <td className="px-6 py-4 ">
-                                            <a href="#" className="font-medium text-blue-600 hover:underline"
-                                            >Share it</a>
-                                        </td>
+                                        <th scope="col" className="px-6 py-3">
+                                            <span >Action</span>
+                                        </th>
                                     </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                    {url?.map((urlList) => {
+                                        return (
+
+
+                                            <tr key={urlList._id} className="bg-white border-b ">
+                                                <td className="px-6 py-4 font-medium text-gray-900"
+                                                >
+                                                    <div className="flex justify-between ">
+                                                        <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
+
+                                                            {urlList.originalUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.originalUrl}
+                                                        </Link>
+
+                                                        <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
+                                                            onClick={handleCopyOriginalUrl}
+                                                        >Copy</span>
+                                                    </div>
+
+
+                                                </td>
+                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                                                    <div className="flex justify-between">
+                                                        <Link to={urlList.originalUrl} className="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
+
+                                                            {urlList.shortUrl.split("").length > 40 ? urlList.originalUrl.split("").slice(0, 20).join("") + "..." : urlList.shortUrl}
+                                                        </Link>
+
+                                                        <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded flex justify-center items-center cursor-pointer"
+                                                            onClick={handleCopyShortUrl}
+                                                        >Copy</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {formatDate(urlList.expiresAt)}
+                                                </td>
+
+                                                <td className="px-6 py-4 ">
+                                                    <a href="#" className="font-medium text-blue-600 hover:underline"
+                                                    >Share it</a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                    ): (null)}
+                    
                 </div>
 
             )}

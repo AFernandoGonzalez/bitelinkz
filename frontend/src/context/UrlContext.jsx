@@ -73,7 +73,7 @@ export const UrlProvider = ({ children }) => {
                 body: JSON.stringify({ originalUrl, expiresAt: expirationDate.toISOString() }),
             });
 
-            if(!response.ok) {
+            if (!response.ok) {
                 const errorData = await response.json();
                 toast.error(errorData.error, {
                     position: 'top-center',
@@ -82,24 +82,25 @@ export const UrlProvider = ({ children }) => {
                     closeOnClick: true,
                     draggable: true,
                 });
+            } else {
+                const data = await response.json();
+
+                // Update the URL array without replacing it
+                setUrl((prevUrls) => [...prevUrls, data]);
+                toast.success('URL Created successfully', {
+                    position: 'top-center',
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                });
+                return data;
             }
-
-            const data = await response.json();
-
-            // Update the URL array without replacing it
-            setUrl((prevUrls) => [...prevUrls, data]);
-            toast.success('URL Created successfully', {
-                position: 'top-center',
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-            });
-            return data; 
         } catch (error) {
             console.log(error.message);
         }
     };
+
 
     const updateUrl = async (urlId, newOriginalUrl, formattedDate) => {
         try {
