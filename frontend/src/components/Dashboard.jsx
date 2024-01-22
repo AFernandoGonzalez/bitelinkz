@@ -23,7 +23,7 @@ const formatDate = (dateString) => {
 
 };
 
-const UrlInfo = () => {
+const Dashboard = () => {
   const { theme } = useTheme();
   const { url, updateUrl, deleteUrl, deleteUrlBulk } = useUrl();
   const [updatedSelectedDate, setUpdatedSelectedDate] = useState(null);
@@ -41,13 +41,23 @@ const UrlInfo = () => {
 
   const [selectedUrls, setSelectedUrls] = useState([]);
 
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [urlsPerPage, setUrlsPerPage] = useState(10);
+
+  const indexOfLastUrl = currentPage * urlsPerPage;
+  const indexOfFirstUrl = indexOfLastUrl - urlsPerPage;
+
+
+
 
   // Reset when the modal is opened or closed
   useEffect(() => {
     setUpdatedOriginalUrl('');
     setUpdatedSelectedDate(null);
 
-  }, [editModalIsOpen]);
+
+  }, [editModalIsOpen, url]);
 
 
 
@@ -89,7 +99,6 @@ const UrlInfo = () => {
     setModalData(data);
     setDeleteModalIsOpen(true);
   };
-
 
   const handleDeleteConfirm = () => {
     deleteUrl(modalData._id);
@@ -156,6 +165,10 @@ const UrlInfo = () => {
 
   let filteredUrls = [...url];
 
+  // limit the number of urls per page
+  filteredUrls = filteredUrls.slice(indexOfFirstUrl, indexOfLastUrl);
+
+
   if (searchTerm) {
     filteredUrls = filteredUrls.filter((url) =>
       url.originalUrl.toLowerCase().includes(searchTerm.toLowerCase())
@@ -169,6 +182,25 @@ const UrlInfo = () => {
   } else if (selectedFilter === 'visits') {
     filteredUrls = filteredUrls.sort((a, b) => b.visits - a.visits);
   }
+
+
+  //pagitation
+  const nextPage = () => {
+    if (currentPage < Math.ceil(url.length / urlsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+
+
+
+
 
   return (
     <div className='relative'>
@@ -275,8 +307,8 @@ const UrlInfo = () => {
               <thead className="">
                 <tr className=''>
                   <th scope="col" className="p-4">
-                    <div className="flex items-center">
-                      <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    <div className="flex ">
+                      <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2 "
                         checked={selectedUrls.length === url.length && url.length !== 0}
 
                         onChange={() => {
@@ -287,22 +319,22 @@ const UrlInfo = () => {
                           }
                         }}
                       />
-                      <label className="sr-only">checkbox</label>
+
                     </div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-2">
                     Original Url
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-2">
                     Short Url
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-2">
                     Url Views
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-2">
                     Created Date
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-2">
                     Expiration Date
                   </th>
                   <th scope="col" className="px-6 py-3">
@@ -316,39 +348,40 @@ const UrlInfo = () => {
 
               <tbody  >
                 {filteredUrls.map((url) => (
-                  // dark: bg-gray - 800 dark:border-gray-700 dark:hover:bg-gray-600
                   <tr className={`${theme ? "bg-gray-700 hover:bg-gray-600" : "bg-white border-b hover:bg-gray-50"}`}
                     key={url._id}
                   >
-                    <td className="w-4 p-4">
+                    <td className=" p-4">
                       <div className="flex items-center">
-                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2 "
                           onChange={() => handleCheckboxChange(url._id)}
                           checked={selectedUrls.includes(url._id)}
                         />
                         <label className="sr-only">checkbox</label>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium  whitespace-nowrap " >
+                    <td className="px-2 py-2 " >
                       {url.originalUrl.split('').length > 20 ? url.originalUrl.split('').slice(0, 20).join('') + '...' : url.originalUrl}
 
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-2">
                       <Link to={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-purple-400  hover:underline">
                         {url.shortUrl}
                       </Link>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-2">
                       {url.visits}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-2">
                       {formatDate(url.createdAt)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-2">
                       {formatDate(url.expiresAt)}
                     </td>
-                    <td className="px-6 py-4">
-                      <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
+                    <td className="px-2 py-2">
+                      <div className='flex justify-center'>
+                        <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
+                      </div>
                     </td>
                     <td className="flex justify-center items-center px-6 py-4">
                       <a href="#" className="font-medium  hover:underline m-2" onClick={() => handleOpenModal(url)}>
@@ -374,7 +407,7 @@ const UrlInfo = () => {
         {editModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
             <div className="relative p-4 md:max-w-3xl w-full mx-auto">
-              <div className={`relative rounded-lg shadow grid grid-cols-1 gap-4 p-4 md:p-5 text-center ${theme? "bg-gray-800" : "bg-white"} `}>
+              <div className={`relative rounded-lg shadow grid grid-cols-1 gap-4 p-4 md:p-5 text-center ${theme ? "bg-gray-800" : "bg-white"} `}>
                 <div>
                   <div className='py-4'>
                     <label className=" w-full text-lg font-semibold">ORIGINAL URL</label>
@@ -391,11 +424,11 @@ const UrlInfo = () => {
                   </div>
                   <div className='py-4'>
                     <label className="w-full text-lg font-semibold">SHORT URL</label>
-                    <label className="inline-flex items-center justify-center w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
+                    <label className="inline-flex items-center justify-center w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 ">
                       <div className="block">
                         <div className="w-full mx-4 flex justify-around items-center text-lg font-semibold">
                           <Link>{modalData.shortUrl}</Link>
-                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 p-2 rounded dark:bg-green-900 dark:text-green-300"
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 p-2 rounded "
                             onClick={copyToClipboard}
                           >Copy</span>
 
@@ -410,7 +443,7 @@ const UrlInfo = () => {
                   <div className='flex flex-col justify-around'>
                     <div>
                       <label className="w-full text-lg font-semibold">VIEW COUNT</label>
-                      <label className="  inline-flex items-center justify-center w-full p-2 text-gray-900 bg-white border border-gray-200 rounded-lg  dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 ">
+                      <label className="  inline-flex items-center justify-center w-full p-2 text-gray-900 bg-white border border-gray-200 rounded-lg  peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 ">
                         <div className="block">
                           <div className="w-full  text-lg font-semibold">{modalData.visits}
                           </div>
@@ -446,7 +479,7 @@ const UrlInfo = () => {
                 <div className="flex justify-center">
                   <button
                     type="button"
-                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 mx-2"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 mx-2"
                     onClick={() => setEditModalIsOpen(false)}
                   >
                     Cancel
@@ -470,28 +503,28 @@ const UrlInfo = () => {
         {deleteModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
             <div className="relative p-4">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <div className="relative bg-white rounded-lg shadow ">
                 <button
                   type="button"
-                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
                   onClick={() => setDeleteModalIsOpen(false)}
                 >
                   <span className="sr-only">Close modal</span>
                 </button>
                 <div className="p-4 md:p-5 text-center">
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  <h3 className="mb-5 text-lg font-normal text-gray-500 ">
                     Are you sure you want to delete this short URL?
                   </h3>
                   <button
                     type="button"
-                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
+                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
                     onClick={handleDeleteConfirm}
                   >
                     Yes, I'm sure
                   </button>
                   <button
                     type="button"
-                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 "
                     onClick={() => setDeleteModalIsOpen(false)}
                   >
                     No, cancel
@@ -506,28 +539,28 @@ const UrlInfo = () => {
         {deleteBulkModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
             <div className="relative p-4">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <div className="relative bg-white rounded-lg shadow ">
                 <button
                   type="button"
-                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
                   onClick={() => setDeleteBulkModalIsOpen(false)}
                 >
                   <span className="sr-only">Close modal</span>
                 </button>
                 <div className="p-4 md:p-5 text-center">
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  <h3 className="mb-5 text-lg font-normal text-gray-500 ">
                     Are you sure you want to delete all selected short URLS?
                   </h3>
                   <button
                     type="button"
-                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
+                    className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
                     onClick={handleBulkDelete}
                   >
                     Yes, I'm sure
                   </button>
                   <button
                     type="button"
-                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 "
                     onClick={handleCancelBulkDelete}
                   >
                     No, cancel
@@ -539,8 +572,74 @@ const UrlInfo = () => {
         )}
       </div>
 
+
+
+      <nav aria-label="Page navigation example">
+        <ul className="inline-flex -space-x-px text-sm">
+          <li>
+            {currentPage === 1 ? (
+              <a
+                href="#"
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-gray-300 border border-e-0 border-gray-300 rounded-s-lg cursor-not-allowed "
+                onClick={prevPage}
+              >
+                Previous
+              </a>
+            ) : (
+              <a
+                href="#"
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+                onClick={prevPage}
+              >
+                Previous
+              </a>
+            )}
+          </li>
+
+
+          {
+            [...Array(Math.ceil(url.length / urlsPerPage))].map((_, i) => (
+              <li key={i}>
+                {currentPage === i + 1 ? (
+                  <a
+                    href="#"
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-gray-300 border border-e-0 border-gray-300  cursor-not-allowed "
+                  >
+                    {i + 1}
+                  </a>
+                ) : (
+                  <a
+                    href="#"
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                    onClick={() => setCurrentPage(i + 1)}
+                  >
+                    {i + 1}
+                  </a>
+                )}
+              </li>
+            ))
+          }
+
+
+          <li>
+            {
+              currentPage === Math.ceil(url.length / urlsPerPage) ? (
+                <a className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-gray-300 border border-e-0 border-gray-300 rounded-e-lg cursor-not-allowed ">
+                  Next
+                </a>
+              ) : (
+                <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 "
+                  onClick={nextPage}
+                >Next</a>
+              )
+            }
+
+          </li>
+        </ul>
+      </nav>
+
     </div>
   );
 };
 
-export default UrlInfo;
+export default Dashboard;

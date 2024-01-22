@@ -1,5 +1,5 @@
 import React from 'react'
-import UrlInfo from '../components/UrlInfo'
+import UrlInfo from '../components/Dashboard'
 
 export const ManageLinks = () => {
   return (
