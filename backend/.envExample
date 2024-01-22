@@ -1,0 +1,9 @@
+JWT_SECRET=your_secret_key
+PORT=your_port
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_CLUSTER=your_db_cluster
+DB_CLUSTER_ID=your_db_cluster_id
+DB_NAME=yourDBName
+
+BASE_URL=your_api_base_url

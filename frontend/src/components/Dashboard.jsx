@@ -391,7 +391,7 @@ const Dashboard = () => {
                       <div className='flex justify-center'
                         onClick={() => handleOpenQRModal(url)}
                       >
-                        <i className="fas fa-qrcode text-blue-600"></i>
+                        <i className="fas fa-qrcode text-green-500 hover:text-green-800"></i>
                       </div>
                     </td>
                     <td className="flex justify-center items-center px-6 py-4">
