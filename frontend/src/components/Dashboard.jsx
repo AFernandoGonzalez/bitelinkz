@@ -347,7 +347,7 @@ const Dashboard = () => {
                     Expiration Date
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    QR Code
+                    View <br/>QR Code
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Action
@@ -391,8 +391,7 @@ const Dashboard = () => {
                       <div className='flex justify-center'
                         onClick={() => handleOpenQRModal(url)}
                       >
-                        {/* <img src={url.qrCode} alt="QR Code" className="w-6 h-6" /> */}
-                        view
+                        <i className="fas fa-qrcode text-blue-600"></i>
                       </div>
                     </td>
                     <td className="flex justify-center items-center px-6 py-4">
