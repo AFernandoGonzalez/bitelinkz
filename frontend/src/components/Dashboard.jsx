@@ -6,6 +6,10 @@ import { format } from 'date-fns';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
+
+
+
 import "react-datepicker/dist/react-datepicker.css";
 import './UrlInfo.css';
 
@@ -205,10 +209,6 @@ const Dashboard = () => {
       setCurrentPage(currentPage - 1);
     }
   };
-
-
-
-
 
 
   return (
@@ -596,35 +596,46 @@ const Dashboard = () => {
         {viewQrModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
             <div className="relative p-4">
+
+
               <div className="relative bg-white rounded-lg shadow ">
+                <button
+                  type="button"
+                  className="
+                absolute top-1 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center
+                "
+                  onClick={() => setViewQrModalIsOpen(false)}
+                >
+                  <i className="fas fa-times text-xl"></i>
+                </button>
 
                 <div className="p-4 md:p-5 text-center">
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 ">
+                  <h3 className="m-5 text-lg font-normal text-gray-500 ">
                     To view URl, please Scan the QR Code.
                   </h3>
 
-                  <div className='flex justify-center'>
+                  <div className='flex flex-col justify-center '>
                     <div>
-                    {modalData.qrCode && (<img src={modalData.qrCode} alt="QR Code" className="w-full" />)}
+                      {modalData.qrCode && (<img src={modalData.qrCode} alt="QR Code" className="w-full" />)}
                     </div>
 
-                    <div>
-                      <label className="text-gray-600 font-medium">Image Type:</label>
+                    <div className='flex flex-col  gap-4'>
+                      <label className="text-gray-600 font-medium">Choose an Image Type:</label>
                       <ul
-                        className="ml-2 p-2 border border-gray-300 rounded-md"
+                        className="p-2 border border-gray-300 rounded-md flex flex-row justify-around items-center"
                         value={selectedImageType}
                         onChange={(e) => setSelectedImageType(e.target.value)}
                       >
-                        {/* <option value="png">PNG</option>
-                        <option value="jpeg">JPEG</option>
-                        <option value="webp">WEBP</option> */}
                         {
                           ['png', 'jpeg', 'webp'].map((type) => (
-                            <li key={type}>
-                              <label className="inline-flex items-center">
+                            <li
+                              key={type}
+                              className=''
+                            >
+                              <label className="flex justify-center items-center">
                                 <input
                                   type="radio"
-                                  className="form-radio"
+                                  className="form-radio bg-gray-200 focus:ring-blue-500 focus:border-blue-500 text-blue-600 border-gray-300 rounded"
                                   name="accountType"
                                   value={type}
                                   checked={selectedImageType === type}
@@ -636,32 +647,42 @@ const Dashboard = () => {
                           ))
                         }
                       </ul>
+
+
+                      <button
+                        type="button"
+                        className=" text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm items-center px-5 py-2.5 text-center"
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.download = `${modalData.shortUrl}.${selectedImageType}`;
+                          link.href = modalData.qrCode;
+                          link.click();
+                        }}
+                      >
+                        Download {selectedImageType.toUpperCase()}
+                      </button>
                     </div>
                   </div>
 
-
-                  <button
-                    type="button"
-                    className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.download = `${modalData.shortUrl}.${selectedImageType}`;
-                      link.href = modalData.qrCode;
-                      link.click();
-                    } }
-                  >
-                    Download {selectedImageType.toUpperCase()}
-                  </button>
+                  <div className="flex justify-evenly items-center m-4">
+                    <p className="text-gray-500 text-sm font-medium">Share on: </p>
+                    <TwitterShareButton
+                      url={modalData.shortUrl}
+                      title="QR Code"
+                      className='mr-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg'
+                    >
+                      <i className="fab fa-twitter"></i>
+                    </TwitterShareButton>
 
 
-                  {/* close */}
-                  <button
-                    type="button"
-                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 "
-                    onClick={() => setViewQrModalIsOpen(false)}
-                  >
-                    Close
-                  </button>
+                    <WhatsappShareButton
+                      url={modalData.shortUrl}
+                      title="QR Code"
+                    >
+                      <i className="fab fa-whatsapp text-green-500"></i>
+                    </WhatsappShareButton>
+                  </div>
+
                 </div>
               </div>
             </div>
