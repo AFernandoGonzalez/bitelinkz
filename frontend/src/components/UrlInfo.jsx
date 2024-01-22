@@ -171,32 +171,34 @@ const UrlInfo = () => {
   }
 
   return (
-    <div>
+    <div className='relative'>
+
       <div className="sm:flex sm:flex-row sm:flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
-        <div className="flex items-center justify-between w-full flex-wrap">
+        <div className="">
 
-          <div className="flex items-center justify-between w-full ">
-            <button
-              type="button"
-              className="font-medium m-4"
-              onClick={() => setDeleteBulkModalIsOpen(true)}
-              disabled={selectedUrls.length === 0}
-            >
-              {selectedUrls.length > 1 ? (
-                <>
-                  <span className="m-2"></span>
-                  <i className="fas fa-trash text-red-600"></i>
-                </>
-              ) : (
-                <>
-                  <span className="m-2"></span>
-                  <i className="fas fa-trash text-gray-400"></i>
-                </>
-              )}
+          <div className="grid grid-cols-2 md:flex items-center justify w-[100%] p-2">
+            <div className='col-span-1'>
+              <button
+                type="button"
+                className="font-medium m-4"
+                onClick={() => setDeleteBulkModalIsOpen(true)}
+                disabled={selectedUrls.length === 0}
+              >
+                {selectedUrls.length > 1 ? (
+                  <>
+                    <span className="m-2"></span>
+                    <i className="fas fa-trash text-red-600"></i>
+                  </>
+                ) : (
+                  <>
+                    <span className="m-2"></span>
+                    <i className="fas fa-trash text-gray-400"></i>
+                  </>
+                )}
+              </button>
+            </div>
 
-            </button>
-
-            <div className=''>
+            <div className='col-span-1'>
               <div className="m-4 ">
                 <select
                   value={selectedFilter}
@@ -209,17 +211,8 @@ const UrlInfo = () => {
                 </select>
               </div>
             </div>
-            {/* <div>
-            <input
-              type="text"
-              placeholder="Search by URL"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="p-2 border rounded"
-            />
-          </div> */}
 
-            <div className="relative w-full">
+            <div className="col-span-3 md:w-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 
               </div>
@@ -229,147 +222,152 @@ const UrlInfo = () => {
               />
             </div>
 
-            {
-              url.length > 0 ? (
-                <CSVLink
-                  data={filteredUrls}
-                  headers={[
-                    { label: "Original Url", key: "originalUrl" },
-                    { label: "Short Url", key: "shortUrl" },
-                    { label: "Url Views", key: "visits" },
-                    { label: "Expiration Date", key: "expiresAt", formatter: (col) => formatDate(col.expiresAt) },
-                    // Add more headers for additional fields
-                  ]}
-                  filename="url_info_export.csv"
-                >
-                  {/* <button className="bg-green-500 text-white rounded p-2">Export to CSV</button> */}
-                  <button type="submit" className="m-2 p-1 ms-2 text-sm font-medium text-white bg-green-700 rounded-lg border  hover:bg-green-800 ">
+            <div className='order-first md:order-last'>
 
-                    Export to CSV
-                  </button>
-                </CSVLink>
-              ) : (
-                <CSVLink
-                  data={filteredUrls}
-                  headers={[
-                    { label: "Original Url", key: "originalUrl" },
-                    { label: "Short Url", key: "shortUrl" },
-                    { label: "Url Views", key: "visits" },
-                    { label: "Expiration Date", key: "expiresAt", formatter: (col) => formatDate(col.expiresAt) },
-                    // Add more headers for additional fields
-                  ]}
-                  filename="url_info_export.csv"
-                >
-                  {/* <button className="bg-green-500 text-white rounded p-2">Export to CSV</button> */}
-                  <button type="submit" className="m-2 p-1 ms-2 text-sm font-medium text-white  rounded-lg border  bg-gray-300 cursor-not-allowed "
-                    disabled
+              {
+                url.length > 0 ? (
+                  <CSVLink
+                    data={filteredUrls}
+                    headers={[
+                      { label: "Original Url", key: "originalUrl" },
+                      { label: "Short Url", key: "shortUrl" },
+                      { label: "Url Views", key: "visits" },
+                      { label: "Expiration Date", key: "expiresAt", formatter: (col) => formatDate(col.expiresAt) },
+                      // Add more headers for additional fields
+                    ]}
+                    filename="url_info_export.csv"
                   >
+                    {/* <button className="bg-green-500 text-white rounded p-2">Export to CSV</button> */}
+                    <button type="submit" className="m-2 p-1 ms-2 text-sm font-medium text-white bg-green-700 rounded-lg border  hover:bg-green-800 ">
 
-                    Export to CSV
-                  </button>
-                </CSVLink>
-              )
-            }
+                      Export to CSV
+                    </button>
+                  </CSVLink>
+                ) : (
+                  <CSVLink
+                    data={filteredUrls}
+                    headers={[
+                      { label: "Original Url", key: "originalUrl" },
+                      { label: "Short Url", key: "shortUrl" },
+                      { label: "Url Views", key: "visits" },
+                      { label: "Expiration Date", key: "expiresAt", formatter: (col) => formatDate(col.expiresAt) },
+                      // Add more headers for additional fields
+                    ]}
+                    filename="url_info_export.csv"
+                  >
+                    {/* <button className="bg-green-500 text-white rounded p-2">Export to CSV</button> */}
+                    <button type="submit" className="m-2 p-1 ms-2 text-sm font-medium text-white  rounded-lg border  bg-gray-300 cursor-not-allowed "
+                      disabled
+                    >
+
+                      Export to CSV
+                    </button>
+                  </CSVLink>
+                )
+              }
+            </div>
 
           </div>
 
-          {/* dropdown */}
 
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="p-4">
-                  <div className="flex items-center">
-                    <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      checked={selectedUrls.length === url.length && url.length !== 0}
-
-                      onChange={() => {
-                        if (selectedUrls.length === url.length) {
-                          setSelectedUrls([]);
-                        } else {
-                          setSelectedUrls(url.map((url) => url._id));
-                        }
-                      }}
-                    />
-                    <label className="sr-only">checkbox</label>
-                  </div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Original Url
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Short Url
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Url Views
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Created Date
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Expiration Date
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  QR Code
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            {filteredUrls.map((url) => (
-              <tbody key={url._id} >
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="w-4 p-4">
+          <div className="overflow-x-auto md:overflow-x-visible">
+            <table className="">
+              <thead className="">
+                <tr>
+                  <th scope="col" className="p-4">
                     <div className="flex items-center">
-                      <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        onChange={() => handleCheckboxChange(url._id)}
-                        checked={selectedUrls.includes(url._id)}
+                      <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        checked={selectedUrls.length === url.length && url.length !== 0}
+
+                        onChange={() => {
+                          if (selectedUrls.length === url.length) {
+                            setSelectedUrls([]);
+                          } else {
+                            setSelectedUrls(url.map((url) => url._id));
+                          }
+                        }}
                       />
                       <label className="sr-only">checkbox</label>
                     </div>
-                  </td>
-                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" style={{
-                    overflowX: "scroll", maxWidth: "200px"
-                  }}>
-                    {url.originalUrl}
-
                   </th>
-                  <td className="px-6 py-4">
-                    <a href={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                      {url.shortUrl}
-                    </a>
-
-                  </td>
-                  <td className="px-6 py-4">
-                    {url.visits}
-                  </td>
-                  <td className="px-6 py-4">
-                    {formatDate(url.createdAt)}
-                  </td>
-                  <td className="px-6 py-4">
-                    {formatDate(url.expiresAt)}
-                  </td>
-                  <td className="px-6 py-4">
-                    <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
-                  </td>
-                  <td className="flex justify-center items-center px-6 py-4">
-                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleOpenModal(url)}>
-                      <i className="fas fa-edit"></i>
-                    </a>
-                    <a href="#" className="font-medium text-red-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleDeleteModal(url)}>
-                      <i className="fas fa-trash"></i>
-                    </a>
-                  </td>
-
+                  <th scope="col" className="px-6 py-3">
+                    Original Url
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Short Url
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Url Views
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Created Date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Expiration Date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    QR Code
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Action
+                  </th>
                 </tr>
+              </thead>
 
-              </tbody>
-            ))}
-          </table>
+              {filteredUrls.map((url) => (
+                <tbody key={url._id} >
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td className="w-4 p-4">
+                      <div className="flex items-center">
+                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={() => handleCheckboxChange(url._id)}
+                          checked={selectedUrls.includes(url._id)}
+                        />
+                        <label className="sr-only">checkbox</label>
+                      </div>
+                    </td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                      {url.originalUrl.split('').length > 20 ? url.originalUrl.split('').slice(0, 20).join('') + '...' : url.originalUrl}
+
+                    </th>
+                    <td className="px-6 py-4">
+                      <a href={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        {url.shortUrl}
+                      </a>
+
+                    </td>
+                    <td className="px-6 py-4">
+                      {url.visits}
+                    </td>
+                    <td className="px-6 py-4">
+                      {formatDate(url.createdAt)}
+                    </td>
+                    <td className="px-6 py-4">
+                      {formatDate(url.expiresAt)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
+                    </td>
+                    <td className="flex justify-center items-center px-6 py-4">
+                      <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleOpenModal(url)}>
+                        <i className="fas fa-edit"></i>
+                      </a>
+                      <a href="#" className="font-medium text-red-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleDeleteModal(url)}>
+                        <i className="fas fa-trash"></i>
+                      </a>
+                    </td>
+
+                  </tr>
+
+                </tbody>
+              ))}
+            </table>
+          </div>
 
         </div>
       </div>
+
+      {/* Modals */}
       <div>
         {editModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -466,7 +464,6 @@ const UrlInfo = () => {
           </div>
         )}
       </div>
-
       <div>
         {deleteModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
