@@ -14,11 +14,17 @@ export const Home = () => {
         <HeroSection theme={theme} />
         <UrlForm theme={theme} />
       </div>
+      <div className=""
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6rem',
+      }}
+      >
       <LatestUrl theme={theme} />
-      <div className="">
-        <FeaturesSection theme={theme} />
-      </div>
+      <FeaturesSection theme={theme} />
       <FAQSection />
+      </div>
     </div>
   );
 };

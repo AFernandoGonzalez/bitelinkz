@@ -3,7 +3,13 @@ import { FeatureCard } from './FeaturesCard'
 
 export const FeaturesSection = ({ theme }) => {
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6rem',
+            }}
+        >
             <section className={`max-w-screen-lg mx-auto p-6 rounded-lg ${theme ? 'bg-gray-700' : 'bg-slate-50'}`}>
                 <div className='mb-8'>
                     <h2 className={`text-center text-3xl md:text-6xl font-bold mb-2 ${theme ? '' : 'text-gray-800'}`}>
@@ -27,7 +33,7 @@ export const FeaturesSection = ({ theme }) => {
                 </div>
             </section>
 
-            <section className='max-w-screen mx-4 mt-[5rem] flex flex-wrap justify-between '>
+            <section className='max-w-screen mx-4  flex flex-wrap justify-between '>
                 <div className='p-2 w-full sm:w-1/3 flex items-center'>
                     <i className={`fas fa-share text-4xl md:text-4xl p-2 m-2 mr-4 rounded-lg ${theme ? "bg-gray-700" : "bg-gray-100"}`}></i>
                     <div>
