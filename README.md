@@ -84,7 +84,10 @@ Provide instructions on how to install and set up the project locally.
 
 1. Clone the repository:
 
-   git clone <repository-url>
+   ```
+   git clone https://github.com/AFernandoGonzalez/snipsnapUrlshortener.git
+
+   ```
 
 ### Frontend (Vite)
 
@@ -107,96 +110,3 @@ npm install
 npm start
 
 ```
-
-## Dependencies
-
-List the main dependencies used in the project with their versions.
-
-## Contributing
-
-Explain how others can contribute to your project. Include guidelines for pull requests and code contributions.
-
-## License
-
-This project is licensed under the [LICENSE NAME] - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Project Structure
-
-├── 📁snipsnap-urlshortener
-├── 📁backend
-│ ├── .env
-│ ├── .gitignore
-│ ├── 📁api
-│ │ └── index.js
-│ ├── app.js
-│ ├── package-lock.json
-│ ├── package.json
-│ ├── 📁src
-│ │ ├── 📁auth
-│ │ │ └── auth.js
-│ │ ├── 📁controllers
-│ │ │ └── url.js
-│ │ │ └── userAuth.js
-│ │ ├── 📁db
-│ │ │ └── db.js
-│ │ ├── 📁models
-│ │ │ └── url.js
-│ │ │ └── user.js
-│ │ ├── 📁routes
-│ │ └── url.js
-│ │ └── userAuth.js
-│ ├── vercel.json
-├── 📁frontend
-│ ├── .env
-│ ├── .eslintrc.cjs
-│ ├── .gitignore
-│ ├── index.html
-│ ├── package-lock.json
-│ ├── package.json
-│ ├── postcss.config.js
-│ ├── 📁public
-│ │ └── vite.svg
-│ ├── README.md
-│ ├── 📁src
-│ │ ├── App.css
-│ │ ├── App.jsx
-│ │ ├── 📁assets
-│ │ │ └── logo-bgDark.png
-│ │ │ └── logo-bgWhite.png
-│ │ │ └── react.svg
-│ │ ├── 📁components
-│ │ │ ├── 📁auth
-│ │ │ │ └── ProtectedRoute.jsx
-│ │ │ │ └── Register.jsx
-│ │ │ │ └── SignIn.jsx
-│ │ │ ├── Dashboard.jsx
-│ │ │ ├── ErrorPage.jsx
-│ │ │ ├── FAQSection.jsx
-│ │ │ ├── FeaturesCard.jsx
-│ │ │ ├── FeaturesSection.jsx
-│ │ │ ├── Footer.jsx
-│ │ │ ├── HeroSection.jsx
-│ │ │ ├── LatestUrl.css
-│ │ │ ├── LatestUrl.jsx
-│ │ │ ├── Navbar.css
-│ │ │ ├── Navbar.jsx
-│ │ │ ├── ShortenUrlModal.css
-│ │ │ ├── ShortenUrlModal.jsx
-│ │ │ ├── UrlForm.css
-│ │ │ ├── UrlForm.jsx
-│ │ │ ├── UrlInfo.css
-│ │ │ ├── UrlItem.css
-│ │ │ └── UrlItem.jsx
-│ │ ├── constants.js
-│ │ ├── 📁context
-│ │ │ ├── AuthContext.jsx
-│ │ │ ├── Theme.jsx
-│ │ │ └── UrlContext.jsx
-│ │ ├── index.css
-│ │ ├── main.jsx
-│ │ ├── 📁pages
-│ │ └── Home.jsx
-│ │ └── ManageLinks.jsx
-│ ├── tailwind.config.js
-│ ├── vercel.json
-│ ├── vite.config.js
