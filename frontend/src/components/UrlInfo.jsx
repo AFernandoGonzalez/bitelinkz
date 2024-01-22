@@ -176,7 +176,7 @@ const UrlInfo = () => {
       <div className="sm:flex sm:flex-row sm:flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
         <div className="">
 
-          <div className="grid grid-cols-2 md:flex items-center justify w-[100%] p-2">
+          <div className="grid grid-cols-2 md:flex items-center justify w-[100%] p-2 ">
             <div className='col-span-1'>
               <button
                 type="button"
@@ -271,9 +271,9 @@ const UrlInfo = () => {
 
 
           <div className="overflow-x-auto md:overflow-x-visible">
-            <table className="">
+            <table className={` ${theme ? "bg-gray-800" : "bg-gray-200"} rounded-lg `}>
               <thead className="">
-                <tr>
+                <tr className=''>
                   <th scope="col" className="p-4">
                     <div className="flex items-center">
                       <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -314,9 +314,12 @@ const UrlInfo = () => {
                 </tr>
               </thead>
 
-              {filteredUrls.map((url) => (
-                <tbody key={url._id} >
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <tbody  >
+                {filteredUrls.map((url) => (
+                  // dark: bg-gray - 800 dark:border-gray-700 dark:hover:bg-gray-600
+                  <tr className={`${theme ? "bg-gray-700 hover:bg-gray-600" : "bg-white border-b hover:bg-gray-50"}`}
+                    key={url._id}
+                  >
                     <td className="w-4 p-4">
                       <div className="flex items-center">
                         <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -326,15 +329,14 @@ const UrlInfo = () => {
                         <label className="sr-only">checkbox</label>
                       </div>
                     </td>
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                    <td className="px-6 py-4 font-medium  whitespace-nowrap " >
                       {url.originalUrl.split('').length > 20 ? url.originalUrl.split('').slice(0, 20).join('') + '...' : url.originalUrl}
 
-                    </th>
+                    </td>
                     <td className="px-6 py-4">
-                      <a href={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                      <Link to={url.shortUrl} target="_blank" rel="noreferrer" className="font-medium text-purple-400  hover:underline">
                         {url.shortUrl}
-                      </a>
-
+                      </Link>
                     </td>
                     <td className="px-6 py-4">
                       {url.visits}
@@ -349,18 +351,18 @@ const UrlInfo = () => {
                       <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
                     </td>
                     <td className="flex justify-center items-center px-6 py-4">
-                      <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleOpenModal(url)}>
+                      <a href="#" className="font-medium  hover:underline m-2" onClick={() => handleOpenModal(url)}>
                         <i className="fas fa-edit"></i>
                       </a>
-                      <a href="#" className="font-medium text-red-600 dark:text-blue-500 hover:underline m-2" onClick={() => handleDeleteModal(url)}>
+                      <a href="#" className="font-medium text-red-600  hover:underline m-2" onClick={() => handleDeleteModal(url)}>
                         <i className="fas fa-trash"></i>
                       </a>
                     </td>
 
                   </tr>
 
-                </tbody>
-              ))}
+                ))}
+              </tbody>
             </table>
           </div>
 
@@ -372,7 +374,7 @@ const UrlInfo = () => {
         {editModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
             <div className="relative p-4 md:max-w-3xl w-full mx-auto">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 grid grid-cols-1 gap-4 p-4 md:p-5 text-center">
+              <div className={`relative rounded-lg shadow grid grid-cols-1 gap-4 p-4 md:p-5 text-center ${theme? "bg-gray-800" : "bg-white"} `}>
                 <div>
                   <div className='py-4'>
                     <label className=" w-full text-lg font-semibold">ORIGINAL URL</label>
