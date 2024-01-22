@@ -7,11 +7,7 @@ This project with both backend and frontend components.This project provides a w
 ## Table of Contents
 
 - [Features](#features)
-- [Usage](#usage)
 - [Installation](#installation)
-- [Dependencies](#dependencies)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
