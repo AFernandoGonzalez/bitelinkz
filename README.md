@@ -89,9 +89,11 @@ Provide instructions on how to install and set up the project locally.
 
 ```
 cd frontend
-
+```
+```
 npm install
-
+```
+```
 npm run dev
 
 ```
@@ -100,9 +102,11 @@ npm run dev
 
 ```
 cd backend
-
+```
+```
 npm install
-
+```
+```
 npm start
 
 ```
