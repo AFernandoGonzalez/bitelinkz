@@ -36,6 +36,7 @@ const Dashboard = () => {
   const [modalData, setModalData] = useState({});
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [viewQrModalIsOpen, setViewQrModalIsOpen] = useState(false);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteBulkModalIsOpen, setDeleteBulkModalIsOpen] = useState(false);
 
@@ -47,6 +48,9 @@ const Dashboard = () => {
 
   const indexOfLastUrl = currentPage * urlsPerPage;
   const indexOfFirstUrl = indexOfLastUrl - urlsPerPage;
+
+  //QR Code image types
+  const [selectedImageType, setSelectedImageType] = useState('png');
 
 
 
@@ -65,6 +69,11 @@ const Dashboard = () => {
     setModalData(data);
     // setModalIsOpen(true);
     setEditModalIsOpen(true);
+  };
+  const handleOpenQRModal = (data) => {
+    setModalData(data);
+    // setModalIsOpen(true);
+    setViewQrModalIsOpen(true);
   };
 
   const handleUpdate = (urlId) => {
@@ -379,8 +388,11 @@ const Dashboard = () => {
                       {formatDate(url.expiresAt)}
                     </td>
                     <td className="px-2 py-2">
-                      <div className='flex justify-center'>
-                        <img src={url.qrCode} alt="QR Code" className="w-6 h-6" />
+                      <div className='flex justify-center'
+                        onClick={() => handleOpenQRModal(url)}
+                      >
+                        {/* <img src={url.qrCode} alt="QR Code" className="w-6 h-6" /> */}
+                        view
                       </div>
                     </td>
                     <td className="flex justify-center items-center px-6 py-4">
@@ -403,6 +415,8 @@ const Dashboard = () => {
       </div>
 
       {/* Modals */}
+
+      {/* Single Edit Modal */}
       <div>
         {editModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -439,9 +453,9 @@ const Dashboard = () => {
                     </label>
                   </div>
                 </div>
-                <div className='md:grid md:grid-cols-2'>
-                  <div className='flex flex-col justify-around'>
-                    <div>
+                <div className='flex flex-col'>
+                  <div className='flex justify-around'>
+                    <div className='col-1'>
                       <label className="w-full text-lg font-semibold">VIEW COUNT</label>
                       <label className="  inline-flex items-center justify-center w-full p-2 text-gray-900 bg-white border border-gray-200 rounded-lg  peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 ">
                         <div className="block">
@@ -453,7 +467,8 @@ const Dashboard = () => {
                       </label>
 
                     </div>
-                    <div>
+
+                    <div className='col-1'>
 
                       <label className="w-full text-lg font-semibold">EXPIRATION DATE</label>
                       <input
@@ -468,11 +483,11 @@ const Dashboard = () => {
                       />
                     </div>
                   </div>
-                  <div className='flex flex-col items-center'>
+                  {/* <div className='flex flex-col items-center'>
 
                     <label className="w-full text-lg font-semibold">QR CODE</label>
                     <img src={modalData.qrCode} alt="QR Code" className="" />
-                  </div>
+                  </div> */}
                 </div>
 
 
@@ -499,6 +514,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Single Delete Modal */}
       <div>
         {deleteModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -535,6 +552,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Bulk Delete Modal */}
       <div>
         {deleteBulkModalIsOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -572,8 +591,86 @@ const Dashboard = () => {
         )}
       </div>
 
+      {/* QR Modal */}
+      <div>
+        {viewQrModalIsOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+            <div className="relative p-4">
+              <div className="relative bg-white rounded-lg shadow ">
+
+                <div className="p-4 md:p-5 text-center">
+                  <h3 className="mb-5 text-lg font-normal text-gray-500 ">
+                    To view URl, please Scan the QR Code.
+                  </h3>
+
+                  <div className='flex justify-center'>
+                    <div>
+                    {modalData.qrCode && (<img src={modalData.qrCode} alt="QR Code" className="w-full" />)}
+                    </div>
+
+                    <div>
+                      <label className="text-gray-600 font-medium">Image Type:</label>
+                      <ul
+                        className="ml-2 p-2 border border-gray-300 rounded-md"
+                        value={selectedImageType}
+                        onChange={(e) => setSelectedImageType(e.target.value)}
+                      >
+                        {/* <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="webp">WEBP</option> */}
+                        {
+                          ['png', 'jpeg', 'webp'].map((type) => (
+                            <li key={type}>
+                              <label className="inline-flex items-center">
+                                <input
+                                  type="radio"
+                                  className="form-radio"
+                                  name="accountType"
+                                  value={type}
+                                  checked={selectedImageType === type}
+                                  onChange={(e) => setSelectedImageType(e.target.value)}
+                                />
+                                <span className="ml-2">{type.toUpperCase()}</span>
+                              </label>
+                            </li>
+                          ))
+                        }
+                      </ul>
+                    </div>
+                  </div>
 
 
+                  <button
+                    type="button"
+                    className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.download = `${modalData.shortUrl}.${selectedImageType}`;
+                      link.href = modalData.qrCode;
+                      link.click();
+                    } }
+                  >
+                    Download {selectedImageType.toUpperCase()}
+                  </button>
+
+
+                  {/* close */}
+                  <button
+                    type="button"
+                    className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 "
+                    onClick={() => setViewQrModalIsOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+
+      {/* Pagination */}
       <nav aria-label="Page navigation example">
         <ul className="inline-flex -space-x-px text-sm">
           <li>
