@@ -8,7 +8,7 @@ export const HeroSection = ({theme}) => {
             </h1>
             <div className='max-w-screen-md mx-auto mt-8 text-center'>
                 <p className={`text-xl ${theme ? 'text-white' : ''}`}>
-                    Welcome to SnipSnap, where we make URL shortening a breeze. Create concise and branded links effortlessly,
+                    Welcome to Bitelinkz, where we make URL shortening a breeze. Create concise and branded links effortlessly,
                     track their performance, and simplify your online sharing experience.
                 </p>
             </div>

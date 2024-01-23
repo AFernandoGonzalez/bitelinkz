@@ -16,7 +16,7 @@ export const FeaturesSection = ({ theme }) => {
                         Features
                     </h2>
                     <p className={`text-xl ${theme ? 'text-white' : ''}`}>
-                        SnipSnap provides a variety of features to help you manage your links.
+                        Bitelinkz provides a variety of features to help you manage your links.
                     </p>
                 </div>
 

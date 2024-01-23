@@ -7,7 +7,7 @@ const Footer = ({ theme }) => {
 
     return (
         <footer className={footerClass}>
-            <p>{currentYear} SnipSnapUrlShortener</p>
+            <p>{currentYear} Bitelinkz</p>
             <p>Designed with ❤️ in NY</p>
         </footer>
     );

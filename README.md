@@ -1,4 +1,4 @@
-# URL Shortener Project
+# Bitelinkz - URL Shortener Project
 
 Welcome to the URL Shortener project!
 
@@ -81,7 +81,7 @@ Provide instructions on how to install and set up the project locally.
 1. Clone the repository:
 
    ```
-   git clone https://github.com/AFernandoGonzalez/snipsnapUrlshortener.git
+   git clone https://github.com/AFernandoGonzalez/bitelinkz.git
 
    ```
 
