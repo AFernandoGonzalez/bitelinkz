@@ -16,6 +16,7 @@ const App = () => {
   return (
     <div className={`app ${theme ? "dark-mode bg-gray-900 text-white" : "light-mode bg-white"} `}
     >
+     
       <header>
         <Navbar />
       </header>
