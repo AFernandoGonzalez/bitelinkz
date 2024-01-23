@@ -21,9 +21,6 @@ export const LatestUrl = ({ theme }) => {
   const { currentUser } = useAuth();
   const latestUrl = url[url.length - 1];
 
-  // console.log("URL: ", url);
-  // console.log("Current User: ", currentUser);
-
   const containerClass = `m-8 p-6 rounded-lg shadow-md ${
     theme ? "bg-gray-800 " : "bg-white"
   }`;
@@ -62,8 +59,6 @@ export const LatestUrl = ({ theme }) => {
       toast.error("Failed to copy to clipboard");
     }
   };
-
-  console.log(url.length > 0);
 
   return (
     <div>

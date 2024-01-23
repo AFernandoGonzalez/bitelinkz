@@ -97,7 +97,13 @@ export const UrlProvider = ({ children }) => {
                 return data;
             }
         } catch (error) {
-            console.log(error.message);
+            toast.error(error.message, {
+                position: 'top-center',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+            });
         }
     };
 
