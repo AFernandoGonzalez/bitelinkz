@@ -2,6 +2,8 @@
 
 Welcome to the URL Shortener project!
 
+Live Link : https://www.bitelinkz.com/
+
 This project with both backend and frontend components.This project provides a web-based URL shortening service with a variety of features. It allows users to shorten long URLs and manage their links conveniently.
 
 ## Table of Contents
